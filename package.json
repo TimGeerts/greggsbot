@@ -1,0 +1,29 @@
+{
+  "name": "greggs-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for the Greggs discord server",
+  "main": "index.js",
+  "repository": "https://gitlab.com/ionis/greggs-bot",
+  "author": "Ionis",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^10.10.2",
+    "@types/winston": "^2.4.4",
+    "ts-loader": "^5.1.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "uws": "^99.0.0",
+    "winston": "^3.1.0"
+  },
+  "scripts": {
+    "start": "node ./dist/main.js",
+    "tslint": "tslint -c tslint.json -t stylish './src/**/*.ts'",
+    "build": "webpack"
+  }
+}

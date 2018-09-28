@@ -1,0 +1,20 @@
+image: node:latest
+
+stages:
+ - lint
+ - build
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: build
+  script: npm install
+  artifacts: 
+    paths: 
+      - node_modules/
+
+lint_typescript:
+  stage: lint
+  script: npm run tslint
