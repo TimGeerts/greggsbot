@@ -1,15 +1,49 @@
-image: node:latest
-
 stages:
  - build
+ - release
+ - deploy
 
 cache:
+  key: "$CI_BUILD_REF_NAME node:10"
   paths:
     - node_modules/
 
-install_dependencies:
+#
+# BUILD
+# Downloads dependencies and then runs Webpack build.
+#
+build:
   stage: build
-  script: npm install
+  image: node:10
+  variables:
+    NODE_ENV: "production"
+  before_script:
+    - npm install
+  script:
+    - npm run build
   artifacts: 
     paths: 
-      - node_modules/
+      - dist/
+
+#
+# RELEASE
+# Build docker image and push it to our registry
+#
+release:
+  stage: release
+  image: docker:latest
+  only:
+    - "master"
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: "overlay"
+  before_script:
+    - docker version
+    - docker info
+    - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+  script:
+    - "docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}:latest --pull ."
+    - "docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}:latest"
+  after_script:
+    - "docker logout ${CI_REGISTRY}"
