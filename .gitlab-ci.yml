@@ -18,7 +18,7 @@ build:
   variables:
     NODE_ENV: "production"
   before_script:
-    - npm install
+    - npm install --dev
   script:
     - npm run build
   artifacts: 
