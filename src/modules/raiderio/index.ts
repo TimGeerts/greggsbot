@@ -91,7 +91,8 @@ export default class RaiderIoModule extends ResponderBotModule
                 .setFooter(raiderIo.profile_url)
                 .addField(mythicSummary, uldirMythicRanks, true)
                 .addField(heroicSummary, uldirHeroic, true)
-                .addField(normalSummary, uldirNorm, true);
+                .addField(normalSummary, uldirNorm, true)
+                .setURL(raiderIo.profile_url);
 
             message.reply(embed);
         }).catch((maybeRaiderIoError: IRaiderIOError) =>
