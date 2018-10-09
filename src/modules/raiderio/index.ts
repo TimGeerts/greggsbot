@@ -85,7 +85,7 @@ export default class RaiderIoModule extends ResponderBotModule
             const normalSummary = `Uldir N ${raiderIo.raid_progression.uldir.normal_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
 
             const embed = new RichEmbed()
-                .setTitle("Raider.io rankings")
+                .setTitle("Raider.IO Rankings")
                 .setColor(0xFF0000)
                 .setDescription(`<${name}> ${realm}-${region}`)
                 .setFooter(raiderIo.profile_url)
