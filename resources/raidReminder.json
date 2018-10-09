@@ -1,0 +1,27 @@
+[
+    {
+        "guildId": "236531364835360769",
+        "title": "UA Reminder",
+        "channelId": "425792146369544192",
+        "cron": "0 14 * * THU,SUN,TUE",
+        "mentions": ["Raider"],
+        "message": "Any absences for tonight's raid after this point will be classed as UA."
+    },
+    {
+        "guildId": "236531364835360769",
+        "title": "Raid prep reminder",
+        "channelId": "425792146369544192",
+        "cron": "0 19 * * THU,SUN,TUE",
+        "mentions": ["Raider"],
+        "message": "Raid starts in an hour, please check the calendar and be ready for quarter to!\n\n"
+    },
+    {
+        "guildId": "308997382140461056",
+        "title": "Test",
+        "channelId": "308997382140461056",
+        "cron": "* * * * THU,SUN,TUE",
+        "mentions": ["testrole"],
+        "message": "This is a test!",
+        "disabled": true
+    }
+]

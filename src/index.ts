@@ -1,15 +1,14 @@
-import winston from "winston";
 import GreggsBot from "./bot";
-
-const logger = winston.createLogger({
-  format: winston.format.json(),
-  level: "info",
-});
+import logger from "./logger";
 
 const discordToken = process.env.DISCORD_TOKEN;
-if (discordToken !== undefined) {
+if (discordToken !== undefined)
+{
   new GreggsBot(logger)
     .start(discordToken)
-    .then(logger.info)
+    .then(() =>
+    {
+      logger.info(`Server started!`);
+    })
     .catch(logger.error);
 }
