@@ -31,7 +31,7 @@ export abstract class ResponderBotModule extends BaseModule implements IBotModul
 
     public abstract getHelpText(): IHelp | null;
 
-    protected abstract process(message: Discord.Message): string;
+    protected abstract process(message: Discord.Message): void;
 
     protected abstract isValidCommand(content: string): boolean;
 }

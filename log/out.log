@@ -135,3 +135,61 @@ info: [Raider IO Module] <- [!rank Greggs Draenor MOON] {"timestamp":"2018-10-08
 info: [Raider IO Module] -> [] {"timestamp":"2018-10-08T23:09:10.018Z"}
 info: [Raider IO Module] <- [!rank Greggs Draenor EU] {"timestamp":"2018-10-08T23:09:36.183Z"}
 info: [Raider IO Module] -> [] {"timestamp":"2018-10-08T23:09:36.184Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:33:49.702Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:33:49.709Z"}
+info: Server started! {"timestamp":"2018-10-10T21:33:49.712Z"}
+info: [Helper] <- [!ghelp] {"timestamp":"2018-10-10T21:33:55.100Z"}
+info: [Helper] -> [Help text is a bit long...] {"timestamp":"2018-10-10T21:33:55.103Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:33:57.793Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:33:57.797Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:35:27.865Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:35:27.873Z"}
+info: Server started! {"timestamp":"2018-10-10T21:35:27.877Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:35:31.972Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:35:31.977Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:37:07.352Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:37:07.361Z"}
+info: Server started! {"timestamp":"2018-10-10T21:37:07.365Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:37:13.565Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:37:13.568Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:37:46.760Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:37:46.767Z"}
+info: Server started! {"timestamp":"2018-10-10T21:37:46.771Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:37:48.884Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:37:48.889Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:40:16.147Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:40:16.154Z"}
+info: Server started! {"timestamp":"2018-10-10T21:40:16.157Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:40:18.445Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:40:18.448Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:41:12.832Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:41:12.838Z"}
+info: Server started! {"timestamp":"2018-10-10T21:41:12.842Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:41:15.173Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:41:15.177Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:43:36.833Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:43:36.840Z"}
+info: Server started! {"timestamp":"2018-10-10T21:43:36.844Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:43:38.795Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:43:38.799Z"}
+info: [Wow Token Price] <- [!token] {"timestamp":"2018-10-10T21:45:12.063Z"}
+info: [Wow Token Price] -> [undefined] {"timestamp":"2018-10-10T21:45:12.065Z"}
+info: [Raider IO Module] <- [!rank] {"timestamp":"2018-10-10T21:46:13.288Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:46:13.290Z"}
+info: Logged in as Greggs Bot#7413 {"timestamp":"2018-10-10T21:47:37.506Z"}
+info: Parsed 2 reminders in RaidReminder {"timestamp":"2018-10-10T21:47:37.514Z"}
+info: Server started! {"timestamp":"2018-10-10T21:47:37.519Z"}
+info: [Raider IO Module] <- [!rank drive ravencrest eu] {"timestamp":"2018-10-10T21:47:45.019Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:47:45.023Z"}
+info: [Raider IO Module] <- [!rank Drive] {"timestamp":"2018-10-10T21:47:52.044Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:47:52.046Z"}
+info: [Raider IO Module] <- [!rank Drive Ravencrest] {"timestamp":"2018-10-10T21:47:59.301Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:47:59.303Z"}
+info: [Raider IO Module] <- [!rank as] {"timestamp":"2018-10-10T21:48:19.756Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:48:19.758Z"}
+info: [Raider IO Module] <- [!rank] {"timestamp":"2018-10-10T21:48:23.695Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:48:23.697Z"}
+info: [Raider IO Module] <- [!rank 33 asf asf 22] {"timestamp":"2018-10-10T21:48:28.578Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:48:28.580Z"}
+info: [Raider IO Module] <- [!rank Drive Ravencrest EU] {"timestamp":"2018-10-10T21:49:06.439Z"}
+info: [Raider IO Module] -> [] {"timestamp":"2018-10-10T21:49:06.440Z"}
