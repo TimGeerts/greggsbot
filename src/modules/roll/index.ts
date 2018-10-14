@@ -3,16 +3,26 @@ import winston, { Logger } from "winston";
 
 import { IHelp } from "../botModule";
 import { ResponderBotModule } from "../responderBotModule";
+import RollDuel from "./rollDuel";
+import RollDuelManager from "./rollDuelManager";
 
 export default class RollBotModule extends ResponderBotModule
 {
+    public static GetRollValue(max: number = RollBotModule.DEFAULT_MAX): number
+    {
+        max = max < 1 ? this.DEFAULT_MAX : max; // Ensure nobody fucks about
+        return Math.floor(Math.random() * (max - 2) + 1);
+    }
+
+    private static readonly DEFAULT_MAX = 100;
     private static readonly MODULE_NAME = "Roll";
-    private readonly DEFAULT_MAX = 100;
-    private readonly MIN = 1;
+
+    private readonly dualManager: RollDuelManager;
 
     constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
     {
         super(client, logger, RollBotModule.MODULE_NAME, prefix);
+        this.dualManager = new RollDuelManager();
     }
 
     public getHelpText()
@@ -31,23 +41,49 @@ export default class RollBotModule extends ResponderBotModule
     protected process(message: Discord.Message): string
     {
         const args = message.content.split(" ");
-        let max = this.DEFAULT_MAX;
-        if (args.length > 1)
+        switch (args.length)
         {
-            max = parseInt(args[1], 10) || this.DEFAULT_MAX;
-            if (max < this.MIN)
-            {
-                max = this.DEFAULT_MAX;
-            }
+            // Just roll standard. E.G., !roll
+            case 1:
+                // Check if there's a roll duel for this person on-going...
+                const usedInDuel = this.dualManager.addPlayerRollIfNeeded(message.author);
+                if (usedInDuel === false)
+                {
+                    this.roll(message);
+                }
+
+                break;
+
+            // Roll with a set max. E.G., !roll 50
+            case 2:
+                const maxRoll = parseInt(args[1], 10);
+                isNaN(maxRoll)
+                    ? this.roll(message)
+                    : this.roll(message, maxRoll);
+
+            // Roll duel!. E.G., !roll duel @ionis
+            case 3:
+                const maybeDuel = args[1];
+                const maybeOpponent = args[2];
+                if (maybeDuel === "duel" && maybeOpponent.startsWith("<@"))
+                {
+                    const challenger = message.author;
+                    const opponent = message.mentions.users.first();
+
+                    this.dualManager.createDuel(message, challenger, opponent);
+                }
+                break;
         }
 
-        const roll = Math.floor(Math.random() * (max - this.MIN + 1) + this.MIN);
-        const response = this.getResponseFromRoll(roll, max, message);
-        message.reply(response);
-        return response;
+        return "";
     }
 
-    private getResponseFromRoll(roll: number, max: number, message: Discord.Message): string
+    private roll(message: Discord.Message, max: number = RollBotModule.DEFAULT_MAX): void
+    {
+        message.reply(this.getResponseForRollValue(RollBotModule.GetRollValue(max), max, message));
+    }
+
+    private getResponseForRollValue(roll: number, max: number, message: Discord.Message): string
     {
         let response = `🎲 rolls... `;
 
@@ -59,7 +95,7 @@ export default class RollBotModule extends ResponderBotModule
         {
             response += `${max} FUUUUUUUUUUUCK`;
         }
-        else if (roll === this.MIN)
+        else if (roll === 1)
         {
             response += `1... no surprises there 💩`;
         }
