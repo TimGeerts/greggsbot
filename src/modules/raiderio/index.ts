@@ -49,6 +49,14 @@ export default class RaiderIoModule extends ResponderBotModule
         const realm = args.length === 3 ? args[2] : "Draenor";
         const region = args.length === 4 ? args[3].toUpperCase() : "EU";
 
+        // Meme override
+        if (name.toLowerCase() === "quick")
+        {
+            const response = "Quick? Didn't they disband? RIP.";
+            message.reply(response);
+            return response;
+        }
+
         if (this.REGIONS.indexOf(region) === -1)
         {
             message.reply(`Where the fuck is ${region}? Try one of ${this.REGIONS.join(", ")}.`);
