@@ -56,6 +56,7 @@ export default class GreggsBot {
   private initListeners(): void
   {
     this.client.on("ready", this.handleReady);
+    this.client.on("error", this.handleError);
     this.client.on("message", (message) =>
     {
       try
@@ -67,6 +68,11 @@ export default class GreggsBot {
         this.logger.error(error);
       }
     });
+  }
+
+  private handleError = (error: Error) =>
+  {
+    this.logger.error(error);
   }
 
   private handleReady = () =>
