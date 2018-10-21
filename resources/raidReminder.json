@@ -5,7 +5,7 @@
         "channelId": "425792146369544192",
         "cron": "0 14 * * THU,SUN,TUE",
         "mentions": ["Raider"],
-        "message": "Any absences for tonight's raid after this point will be classed as UA."
+        "message": "📅 Any absences for tonight's raid after this point will be classed as a late absence (LA). Absence without informing an officer before raid will count as an unauthorised absnce (UA). For more information please check the read-me in the calendar."
     },
     {
         "guildId": "236531364835360769",
