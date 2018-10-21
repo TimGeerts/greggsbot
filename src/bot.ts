@@ -7,6 +7,7 @@ import QuickLinksModule from "./modules/quickLinks";
 import RaiderIoModule from "./modules/raiderio";
 import RaidReminderModule from "./modules/raidReminder";
 import RollBotModule from "./modules/roll";
+import WarcraftLogsModule from "./modules/warcraftLogs";
 import WowTokenPrice from "./modules/wowtoken";
 
 type BotCommand = (message: Discord.Message) => void;
@@ -49,6 +50,7 @@ export default class GreggsBot {
     this.modules.push(new RaidReminderModule(this.client, this.logger));
     this.modules.push(new RaiderIoModule(this.client, this.logger, GreggsBot.PREFIX));
     this.modules.push(new WowTokenPrice(this.client, this.logger, GreggsBot.PREFIX));
+    this.modules.push(new WarcraftLogsModule(this.client, this.logger, GreggsBot.PREFIX));
     this.modules.push(new HelpModule(this.client, this.logger, GreggsBot.PREFIX, () => this));
     this.modules.forEach((m) => m.start());
   }
