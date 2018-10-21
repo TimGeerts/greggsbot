@@ -13,7 +13,7 @@
         "channelId": "425792146369544192",
         "cron": "0 19 * * THU,SUN,TUE",
         "mentions": ["Raider"],
-        "message": "Raid starts in an hour, please check the calendar and be ready for quarter to!\n\n"
+        "message": "🕗 Raid starts in an hour, please check the calendar and be ready for quarter to!\n\n"
     },
     {
         "guildId": "308997382140461056",
