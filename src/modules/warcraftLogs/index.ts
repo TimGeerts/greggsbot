@@ -33,31 +33,35 @@ export default class WarcraftLogsModule extends ResponderBotModule
             return;
         }
 
-        const url = `https://www.warcraftlogs.com:443/v1/reports/guild/Greggs/Draenor/EU?api_key=${this.WCL_TOKEN}`;
-        fetch(url, {method: "GET"})
-        .then((response) =>
-        {
-            if (response.ok)
+        fetch(this.url, {method: "GET"})
+            .then((response) =>
             {
-                return response.json();
-            }
+                if (response.ok)
+                {
+                    return response.json();
+                }
 
-            throw Error();
-        })
-        .then((response: IWCLResponse[]) =>
-        {
-            const logs = response.slice(0, this.MAX_LOGS);
-            message.reply(this.createMessage(logs));
-        })
-        .catch((maybeError: string) =>
-        {
-            message.reply("Couldn't fetch latest logs. Try guild page at https://www.warcraftlogs.com/guild/id/219370");
-        });
+                throw Error();
+            })
+            .then((response: IWCLResponse[]) =>
+            {
+                const logs = response.slice(0, this.MAX_LOGS);
+                message.reply(this.createMessage(logs));
+            })
+            .catch((maybeError: string) =>
+            {
+                message.reply("Couldn't fetch latest logs. Try guild page at https://www.warcraftlogs.com/guild/id/219370");
+            });
     }
 
     protected isValidCommand(content: string): boolean
     {
         return content.startsWith(`${this.prefix}wcl`);
+    }
+
+    private get url(): string
+    {
+        return `https://www.warcraftlogs.com:443/v1/reports/guild/Greggs/Draenor/EU?api_key=${this.WCL_TOKEN}`;
     }
 
     private createMessage(logs: IWCLResponse[]): Discord.RichEmbed
