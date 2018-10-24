@@ -41,7 +41,7 @@ export default class WarcraftLogsModule extends ResponderBotModule
                     return response.json();
                 }
 
-                throw Error();
+                throw new Error("Error encountered fetching data from the server.");
             })
             .then((response: IWCLResponse[]) =>
             {
