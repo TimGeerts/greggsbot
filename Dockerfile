@@ -13,7 +13,7 @@ RUN yarn
 COPY ./resources ./resources
 COPY ./src       ./src
 COPY ./webpack.prod.js ./webpack.common.js ./tsconfig.json ./
-RUN yarn dev
+RUN yarn build
 
 USER node
 CMD ["yarn", "start"]
