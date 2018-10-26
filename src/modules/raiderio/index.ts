@@ -153,7 +153,7 @@ export default class RaiderIoModule extends ResponderBotModule
       }
       if (command.name.toLowerCase() === "lightslayers")
       {
-        message.reply('Raider.io sores? LuL, might as well go back to gearscore, that was awful too!!')
+        message.reply('Raider.io scores? LuL, might as well go back to gearscore, that was awful too!!')
         return "";
       }
 
