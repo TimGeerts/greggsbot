@@ -4,6 +4,7 @@ import Url from "url";
 import winston from "winston";
 
 import { ResponderBotModule } from "../responderBotModule";
+import { cpus } from "os";
 
 interface IRaiderIORequest
 {
@@ -12,11 +13,30 @@ interface IRaiderIORequest
     region: "eu"| "us"|"kr"| "tw";
 }
 
+interface IRaiderIORankCommand{
+  name: string;
+  realm: string;
+  region: string;
+}
+
+interface IRaiderIOCheckCommand{
+  name: string;
+  realm: string;
+  region: string;
+  role: string;
+}
+
+enum RaiderIOCommand {
+    RANK = "rank",
+    CHECK = "check"
+}
+
 export default class RaiderIoModule extends ResponderBotModule
 {
     private static readonly MODULE_NAME = "Raider IO Module";
     private readonly REGIONS = ["EU", "US", "KR", "TW"];
     private readonly RAIDER_IO_URL = "https://raider.io/api/v1/guilds/profile";
+    private readonly RAIDER_IO_CHAR_URL = "https://raider.io/api/v1/characters/profile";
 
     constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
     {
@@ -25,8 +45,12 @@ export default class RaiderIoModule extends ResponderBotModule
 
     public getHelpText()
     {
+      const description = "__Description__: Instantly query Raider IO for guild or character rankings.";
+      const rankHelp = `__Usage (guild ranks)__: \`!rank [guild] [realm] [region]\`\n__Examples__: \`!rank\`, \`!rank Fresh\``;
+      const checkHelp = `__Usage (character ranks)__: \`!check [character] [realm] [region] [role]\`\n__Examples__: \`!check Chipstocks\`, \`!check Chipstocks tank\``;
+      const checkExtraInfoOnRoles = `__Possible roles__: \`tank\`, \`healer\`, \`dps\``;
         return {
-            content: `__Description__: Instantly query Raider IO. Defaults to Greggs, Draenor and then EU.\n__Usage__: \`!rank [guild] [realm] [region]\`\n__Examples__: \`!rank\`, \`!rank Fresh\``,
+            content: `${description}\n${rankHelp}\n${checkHelp}\n${checkExtraInfoOnRoles}`,
             moduleName: RaiderIoModule.MODULE_NAME,
         };
     }
@@ -34,86 +58,142 @@ export default class RaiderIoModule extends ResponderBotModule
     protected process(message: Discord.Message): string
     {
         const args = message.content.split(" ");
-
-        // const searchParams = new URLSearchParams([
-        //     ["name", args.length === 2 ? args[1] : "Greggs"],
-        //     ["realm", args.length === 3 ? args[2] : "Draenor"],
-        //     ["region", args.length === 4 ? args[3] : "eu"],
-        //     ["fields", "raid_rankings"],
-        // ]);
-
-        // const url = Url.parse(this.RAIDER_IO_URL);
-        // url.search = searchParams.toString();
-
-        const name = args.length === 2 ? args[1] : "Greggs";
-        const realm = args.length === 3 ? args[2] : "Draenor";
-        const region = args.length === 4 ? args[3].toUpperCase() : "EU";
-
-        // Meme override
-        if (name.toLowerCase() === "quick")
-        {
-            const response = "Quick? Didn't they disband? RIP.";
-            message.reply(response);
-            return response;
-        }
-
-        if (this.REGIONS.indexOf(region) === -1)
-        {
-            message.reply(`Where the fuck is ${region}? Try one of ${this.REGIONS.join(", ")}.`);
-            return "";
-        }
-
-        const URL = `${this.RAIDER_IO_URL}?name=${name}&realm=${realm}&region=${region}&fields=raid_rankings,raid_progression`;
-
-        fetch(URL, {method: "GET"})
-        .then((response) =>
-        {
-            if (response.ok)
-            {
-                return response.json();
+        if(args && args.length){
+            let command = this.getActualCommand(args[0]);
+            switch (command){
+                case RaiderIOCommand.RANK: {
+                    const cmd: IRaiderIORankCommand = {
+                      name: args.length >= 2 ? args[1] : "Greggs",
+                      realm: args.length >= 3 ? args[2] : "Draenor",
+                      region: args.length >= 4 ? args[3].toUpperCase() : "EU"
+                    }
+                    return this.executeRioRank(message, cmd);
+                }
+                case RaiderIOCommand.CHECK: {
+                  let roleArg = this.findAndRemoveRoleParameter(args);
+                  const cmd: IRaiderIOCheckCommand = {
+                    name: args.length >= 2 ? args[1] : "Chipstocks",
+                    realm: args.length >= 3 ? args[2] : "Draenor",
+                    region: args.length >= 4 ? args[3].toUpperCase() : "EU",
+                    role: roleArg
+                  };
+                  return this.executeRioCheck(message, cmd);
+                }
             }
-            throw new Error("");
-        })
-        .then((raiderIo: IRaiderIOResponse) =>
-        {
-            const uldirMythicRanks =
-            `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.mythic.realm)} / ` +
-            `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.mythic.region)}`;
-
-            const uldirHeroic =
-            `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.heroic.realm)} / ` +
-            `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.heroic.region)}`;
-
-            const uldirNorm =
-            `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.normal.realm)} / ` +
-            `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.normal.region)}`;
-
-            const mythicSummary = `Uldir M ${raiderIo.raid_progression.uldir.mythic_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
-            const heroicSummary = `Uldir HC ${raiderIo.raid_progression.uldir.heroic_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
-            const normalSummary = `Uldir N ${raiderIo.raid_progression.uldir.normal_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
-
-            const embed = new RichEmbed()
-                .setTitle("Raider.IO Rankings")
-                .setColor(0xFF0000)
-                .setDescription(`<${name}> ${realm}-${region}`)
-                .setFooter(raiderIo.profile_url)
-                .addField(mythicSummary, uldirMythicRanks, true)
-                .addField(heroicSummary, uldirHeroic, true)
-                .addField(normalSummary, uldirNorm, true)
-                .setURL(raiderIo.profile_url);
-
-            message.reply(embed);
-        }).catch((maybeRaiderIoError: IRaiderIOError) =>
-        {
-            message.reply("Sorry, I had some trouble fetching that information.");
-        });
-
+        }
         return "";
+    }
+
+    protected executeRioRank(message: Discord.Message, command: IRaiderIORankCommand): string{
+      // Meme override
+      if (command.name.toLowerCase() === "quick")
+      {
+          const response = "Quick? Didn't they disband? RIP.";
+          message.reply(response);
+          return response;
+      }
+
+      if (this.REGIONS.indexOf(command.region) === -1)
+      {
+          message.reply(`Where the fuck is ${command.region}? Try one of ${this.REGIONS.join(", ")}.`);
+          return "";
+      }
+
+      const URL = `${this.RAIDER_IO_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=raid_rankings,raid_progression`;
+
+      fetch(URL, {method: "GET"})
+      .then((response) =>
+      {
+          if (response.ok)
+          {
+              return response.json();
+          }
+          throw new Error("");
+      })
+      .then((raiderIo: IRaiderIOResponse) =>
+      {
+          const uldirMythicRanks =
+          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.mythic.realm)} / ` +
+          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.mythic.region)}`;
+
+          const uldirHeroic =
+          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.heroic.realm)} / ` +
+          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.heroic.region)}`;
+
+          const uldirNorm =
+          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.normal.realm)} / ` +
+          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.normal.region)}`;
+
+          const mythicSummary = `Uldir M ${raiderIo.raid_progression.uldir.mythic_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
+          const heroicSummary = `Uldir HC ${raiderIo.raid_progression.uldir.heroic_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
+          const normalSummary = `Uldir N ${raiderIo.raid_progression.uldir.normal_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
+
+          const embed = new RichEmbed()
+              .setTitle("Raider.IO Rankings")
+              .setColor(0xFF0000)
+              .setDescription(`<${command.name}> ${command.realm}-${command.region}`)
+              .setFooter(raiderIo.profile_url)
+              .addField(mythicSummary, uldirMythicRanks, true)
+              .addField(heroicSummary, uldirHeroic, true)
+              .addField(normalSummary, uldirNorm, true)
+              .setURL(raiderIo.profile_url);
+
+          message.reply(embed);
+      }).catch((maybeRaiderIoError: IRaiderIOError) =>
+      {
+          message.reply("Sorry, I had some trouble fetching that information.");
+      });
+      return "";
+    }
+
+    protected executeRioCheck(message: Discord.Message, command: IRaiderIOCheckCommand): string{
+      if (this.REGIONS.indexOf(command.region) === -1){
+        message.reply(`Where the fuck is ${command.region}? Try one of ${this.REGIONS.join(", ")}.`);
+        return "";
+      }
+      if (command.name.toLowerCase() === "lightslayers")
+      {
+        message.reply('Raider.io sores? LuL, might as well go back to gearscore, that was awful too!!')
+        return "";
+      }
+
+      const URL = `${this.RAIDER_IO_CHAR_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=guild,mythic_plus_scores,mythic_plus_ranks`;
+      fetch(URL, {method: "GET"})
+      .then((response) =>
+      {
+        if (response.ok)
+        {
+          return response.json();
+        }
+        throw new Error("");
+      })
+      .then((raiderIo: IRaiderIOResponse) =>
+      {
+        const maxScoreAndRole = this.maxMythicPlusScore(raiderIo.mythic_plus_scores);
+        const roleToCheck = command.role || maxScoreAndRole.role;
+        const roleToCheckLabel = roleToCheck === 'dps' ? roleToCheck.toUpperCase() : `${roleToCheck[0].toUpperCase()}${roleToCheck.slice(1)}s`;
+        const embed = new RichEmbed()
+          .setTitle(`M+ Rankings for ${command.name} (${command.realm}-${command.region})`)
+          .setColor(0xfaa61a)
+          .setDescription(`Best score: **${maxScoreAndRole.score}** [${maxScoreAndRole.role}]`)
+          
+          .addField('All Classes & Roles', this.checkRankForMedal(raiderIo.mythic_plus_ranks.overall.realm), true)
+          .addField(`All ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[roleToCheck].realm), true)
+          .addField(`All ${raiderIo.class} ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[`class_${roleToCheck}`].realm), true)
+          .setURL(raiderIo.profile_url);
+        message.reply(embed);
+      }).catch((maybeRaiderIoError: IRaiderIOError) =>
+      {
+          message.reply("Sorry, I had some trouble fetching that information.");
+      });
+      return "";
     }
 
     protected isValidCommand(content: string): boolean
     {
-        return content.startsWith(`${this.prefix}rank`);
+        const validCommands = Object.keys(RaiderIOCommand).map((key) => `${RaiderIOCommand[key as any]}`)
+        const command = this.getActualCommand(content); //gets first word up till space (which is the command, with ! removed)
+        return validCommands.indexOf(command) > -1;
     }
 
     private ordinal_suffix_of(i: number): string
@@ -133,6 +213,34 @@ export default class RaiderIoModule extends ResponderBotModule
             return i + "rd";
         }
         return i + "th";
+    }
+
+    private getActualCommand(content: string){
+        return content.replace(/ .*/, '').replace(/!/, '');
+    }
+
+    private maxMythicPlusScore(score: IMythicPlusScores): IMythicPluseScore {
+      let arr = Object.keys(score).filter((key) => key !== 'all').map((s) => {
+        return { role: s, score: score[s]};
+      });
+      let sorted = arr.sort((a, b) => b.score-a.score);
+      return sorted[0];
+    }
+
+    private checkRankForMedal(rank: number): string{
+      const medals = [":first_place:", ":second_place:", ":third_place:"];
+      if(rank === 0) return '0';
+      else return rank < medals.length ? medals[rank-1] : rank.toString();
+    }
+
+    private findAndRemoveRoleParameter(args: string[]) : string{
+      const roleArgs = ["tank", "healer", "dps"];
+      const role = args.find(a => roleArgs.indexOf(a)>-1) || '';
+      const idx = args.findIndex(a => a===role);
+      if(idx >-1){
+        args.splice(idx, 1);
+      }
+      return role;
     }
 }
 
@@ -160,6 +268,18 @@ export interface IRaidData<T>
     "uldir": T;
 }
 
+export interface IMythicPlusData<T>{
+  overall: T;
+  dps: T;
+  healer: T;
+  tank: T;
+  class: T;
+  class_dps: T;
+  class_healer: T;
+  class_tank: T;
+  [key: string]: T;
+}
+
 interface IRaidProgression
 {
     summary: string;
@@ -169,15 +289,40 @@ interface IRaidProgression
     mythic_bosses_killed: number;
 }
 
+interface IMythicPlusRank
+{
+    world: number;
+    region: number;
+    realm: number;
+}
+
+interface IMythicPlusScores{
+    all: number;
+    dps: number;
+    healer: number;
+    tank: number;
+    [key: string]: number;
+}
+
+interface IMythicPluseScore{
+  role: string;
+  score: number;
+}
+
 export interface IRaiderIOResponse
 {
     name: string;
+    race: string;
+    class: string;
     faction: string;
     region: string;
     realm: string;
     profile_url: string;
+    thumbnail_url: string;
     raid_rankings: IRaidData<IRaidRanking>;
     raid_progression: IRaidData<IRaidProgression>;
+    mythic_plus_scores: IMythicPlusScores;
+    mythic_plus_ranks: IMythicPlusData<IMythicPlusRank>;
 }
 
 export interface IRaiderIOError
