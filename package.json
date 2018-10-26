@@ -34,6 +34,7 @@
     "start": "node ./dist/main.js",
     "tslint": "tslint -c tslint.json -t stylish './src/**/*.ts'",
     "dev": "webpack --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "restart": "npm run-script dev && npm run-script start"
   }
 }
