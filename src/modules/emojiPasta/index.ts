@@ -41,6 +41,13 @@ export default class EmojiPastaModule extends ResponderBotModule
             const response = `\n${this.pastas[pastaKey]}`;
             message.reply(response);
         }
+        else
+        {
+            const allKeys = Object.keys(this.pastas)
+            const randKey = allKeys[Math.floor(Math.random() * allKeys.length)];
+            const response = `\n${this.pastas[randKey]}`;
+            message.reply(response);
+        }
         return "";
     }
 
