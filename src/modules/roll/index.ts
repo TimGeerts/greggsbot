@@ -17,12 +17,12 @@ export default class RollBotModule extends ResponderBotModule
     private static readonly DEFAULT_MAX = 100;
     private static readonly MODULE_NAME = "Roll";
 
-    private readonly dualManager: RollDuelManager;
+    private readonly duelManager: RollDuelManager;
 
     constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
     {
         super(client, logger, RollBotModule.MODULE_NAME, prefix);
-        this.dualManager = new RollDuelManager();
+        this.duelManager = new RollDuelManager();
     }
 
     public getHelpText()
@@ -46,7 +46,7 @@ export default class RollBotModule extends ResponderBotModule
             // Just roll standard. E.G., !roll
             case 1:
                 // Check if there's a roll duel for this person on-going...
-                const usedInDuel = this.dualManager.addPlayerRollIfNeeded(message.author);
+                const usedInDuel = this.duelManager.addPlayerRollIfNeeded(message.author);
                 if (usedInDuel === false)
                 {
                     this.roll(message);
@@ -70,7 +70,7 @@ export default class RollBotModule extends ResponderBotModule
                     const challenger = message.author;
                     const opponent = message.mentions.users.first();
 
-                    this.dualManager.createDuel(message, challenger, opponent);
+                    this.duelManager.createDuel(message, challenger, opponent);
                 }
                 break;
         }

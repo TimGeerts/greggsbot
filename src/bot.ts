@@ -3,6 +3,7 @@ import winston, { Logger } from "winston";
 
 import { IBotModule } from "./modules/botModule";
 import HelpModule from "./modules/help";
+import EmojiPastaModule from "./modules/emojiPasta";
 import QuickLinksModule from "./modules/quickLinks";
 import RaiderIoModule from "./modules/raiderio";
 import RaidReminderModule from "./modules/raidReminder";
@@ -46,6 +47,7 @@ export default class GreggsBot {
   private initModules(): void
   {
     this.modules.push(new RollBotModule(this.client, this.logger, GreggsBot.PREFIX));
+    this.modules.push(new EmojiPastaModule(this.client, this.logger, GreggsBot.PREFIX));
     this.modules.push(new QuickLinksModule(this.client, this.logger, GreggsBot.PREFIX));
     this.modules.push(new RaidReminderModule(this.client, this.logger));
     this.modules.push(new RaiderIoModule(this.client, this.logger, GreggsBot.PREFIX));

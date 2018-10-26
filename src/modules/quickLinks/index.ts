@@ -24,7 +24,7 @@ export default class QuickLinksModule extends ResponderBotModule
     public getHelpText()
     {
         const commands = Object.keys(this.links)
-        .map((key) => `${this.prefix}${key}`)
+        .map((key) => `\`${this.prefix}${key}\``)
         .join(" or ");
 
         return {
