@@ -4,7 +4,6 @@ import Url from "url";
 import winston from "winston";
 
 import { ResponderBotModule } from "../responderBotModule";
-import { cpus } from "os";
 
 interface IRaiderIORequest
 {
