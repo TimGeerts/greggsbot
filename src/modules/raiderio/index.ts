@@ -1,31 +1,26 @@
 import Discord, { RichEmbed } from "discord.js";
 import fetch from "node-fetch";
-import Url from "url";
 import winston from "winston";
 
 import { ResponderBotModule } from "../responderBotModule";
 
-interface IRaiderIORequest
+interface IRaiderIORankCommand
 {
-    guild: string;
+    name: string;
     realm: string;
-    region: "eu"| "us"|"kr"| "tw";
+    region: string;
 }
 
-interface IRaiderIORankCommand{
-  name: string;
-  realm: string;
-  region: string;
+interface IRaiderIOCheckCommand
+{
+    name: string;
+    realm: string;
+    region: string;
+    role: string;
 }
 
-interface IRaiderIOCheckCommand{
-  name: string;
-  realm: string;
-  region: string;
-  role: string;
-}
-
-enum RaiderIOCommand {
+enum RaiderIOCommand
+{
     RANK = "rank",
     CHECK = "check",
 }
@@ -33,8 +28,9 @@ enum RaiderIOCommand {
 export default class RaiderIoModule extends ResponderBotModule
 {
     private static readonly MODULE_NAME = "Raider IO Module";
+
     private readonly REGIONS = ["EU", "US", "KR", "TW"];
-    private readonly RAIDER_IO_URL = "https://raider.io/api/v1/guilds/profile";
+    private readonly RAIDER_IO_GUILD_URL = "https://raider.io/api/v1/guilds/profile";
     private readonly RAIDER_IO_CHAR_URL = "https://raider.io/api/v1/characters/profile";
 
     constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
@@ -61,24 +57,28 @@ export default class RaiderIoModule extends ResponderBotModule
         if (args && args.length)
         {
             const command = this.getActualCommand(args[0]);
-            switch (command){
-                case RaiderIOCommand.RANK: {
+            switch (command)
+            {
+                case RaiderIOCommand.RANK:
+                {
                     const cmd: IRaiderIORankCommand = {
-                      name: args.length >= 2 ? args[1] : "Greggs",
-                      realm: args.length >= 3 ? args[2] : "Draenor",
-                      region: args.length >= 4 ? args[3].toUpperCase() : "EU",
+                        name: args.length >= 2 ? args[1] : "Greggs",
+                        realm: args.length >= 3 ? args[2] : "Draenor",
+                        region: args.length >= 4 ? args[3].toUpperCase() : "EU",
                     };
                     return this.executeRioRank(message, cmd);
                 }
-                case RaiderIOCommand.CHECK: {
-                  const roleArg = this.findAndRemoveRoleParameter(args);
-                  const cmd: IRaiderIOCheckCommand = {
-                    name: args.length >= 2 ? args[1] : "Chipstocks",
-                    realm: args.length >= 3 ? args[2] : "Draenor",
-                    region: args.length >= 4 ? args[3].toUpperCase() : "EU",
-                    role: roleArg,
-                  };
-                  return this.executeRioCheck(message, cmd);
+
+                case RaiderIOCommand.CHECK:
+                {
+                    const roleArg = this.findAndRemoveRoleParameter(args);
+                    const cmd: IRaiderIOCheckCommand = {
+                        name: args.length >= 2 ? args[1] : "Chipstocks",
+                        realm: args.length >= 3 ? args[2] : "Draenor",
+                        region: args.length >= 4 ? args[3].toUpperCase() : "EU",
+                        role: roleArg,
+                    };
+                    return this.executeRioCheck(message, cmd);
                 }
             }
         }
@@ -101,7 +101,7 @@ export default class RaiderIoModule extends ResponderBotModule
           return "";
       }
 
-      const URL = `${this.RAIDER_IO_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=raid_rankings,raid_progression`;
+      const URL = `${this.RAIDER_IO_GUILD_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=raid_rankings,raid_progression`;
 
       fetch(URL, {method: "GET"})
       .then((response) =>
@@ -150,47 +150,51 @@ export default class RaiderIoModule extends ResponderBotModule
 
     protected executeRioCheck(message: Discord.Message, command: IRaiderIOCheckCommand): string
     {
-      if (this.REGIONS.indexOf(command.region) === -1)
-      {
-        message.reply(`Where the fuck is ${command.region}? Try one of ${this.REGIONS.join(", ")}.`);
-        return "";
-      }
-      if (command.name.toLowerCase() === "lightslayers")
-      {
-        message.reply("Raider.io scores? LuL, might as well go back to gearscore, that was awful too!!");
-        return "";
-      }
-
-      const URL = `${this.RAIDER_IO_CHAR_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=guild,mythic_plus_scores,mythic_plus_ranks`;
-      fetch(URL, {method: "GET"})
-      .then((response) =>
-      {
-        if (response.ok)
+        if (this.REGIONS.indexOf(command.region) === -1)
         {
-          return response.json();
+            message.reply(`Where the fuck is ${command.region}? Try one of ${this.REGIONS.join(", ")}.`);
+            return "";
         }
-        throw new Error("");
-      })
-      .then((raiderIo: IRaiderIOResponse) =>
-      {
-        const maxScoreAndRole = this.maxMythicPlusScore(raiderIo.mythic_plus_scores);
-        const roleToCheck = command.role || maxScoreAndRole.role;
-        const roleToCheckLabel = roleToCheck === "dps" ? roleToCheck.toUpperCase() : `${roleToCheck[0].toUpperCase()}${roleToCheck.slice(1)}s`;
-        const embed = new RichEmbed()
-          .setTitle(`M+ Rankings for ${command.name} (${command.realm}-${command.region})`)
-          .setColor(0xfaa61a)
-          .setDescription(`Best score: **${maxScoreAndRole.score}** [${maxScoreAndRole.role}]`)
 
-          .addField("All Classes & Roles", this.checkRankForMedal(raiderIo.mythic_plus_ranks.overall.realm), true)
-          .addField(`All ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[roleToCheck].realm), true)
-          .addField(`All ${raiderIo.class} ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[`class_${roleToCheck}`].realm), true)
-          .setURL(raiderIo.profile_url);
-        message.reply(embed);
-      }).catch((maybeRaiderIoError: IRaiderIOError) =>
-      {
-          message.reply("Sorry, I had some trouble fetching that information.");
-      });
-      return "";
+        if (command.name.toLowerCase() === "lightslayers")
+        {
+            message.reply("Raider.io scores? LuL, might as well go back to gearscore, that was awful too!!");
+            return "";
+          }
+
+        const URL = `${this.RAIDER_IO_CHAR_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=guild,mythic_plus_scores,mythic_plus_ranks`;
+
+        fetch(URL, {method: "GET"})
+        .then((response) =>
+        {
+            if (response.ok)
+            {
+                return response.json();
+            }
+            throw new Error("");
+        })
+        .then((raiderIo: IRaiderIOResponse) =>
+        {
+            const maxScoreAndRole = this.maxMythicPlusScore(raiderIo.mythic_plus_scores);
+            const roleToCheck = command.role || maxScoreAndRole.role;
+            const roleToCheckLabel = roleToCheck === "dps" ? roleToCheck.toUpperCase() : `${roleToCheck[0].toUpperCase()}${roleToCheck.slice(1)}s`;
+            const embed = new RichEmbed()
+                .setTitle(`M+ Rankings for ${command.name} (${command.realm}-${command.region})`)
+                .setColor(0xfaa61a)
+                .setDescription(`Best score: **${maxScoreAndRole.score}** [${maxScoreAndRole.role}]`)
+                .addField("All Classes & Roles", this.checkRankForMedal(raiderIo.mythic_plus_ranks.overall.realm), true)
+                .addField(`All ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[roleToCheck].realm), true)
+                .addField(`All ${raiderIo.class} ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[`class_${roleToCheck}`].realm), true)
+                .setURL(raiderIo.profile_url);
+
+            message.reply(embed);
+        })
+        .catch((maybeRaiderIoError: IRaiderIOError) =>
+        {
+            message.reply("Sorry, I had some trouble fetching that information.");
+        });
+
+        return "";
     }
 
     protected isValidCommand(content: string): boolean
@@ -219,7 +223,7 @@ export default class RaiderIoModule extends ResponderBotModule
         return i + "th";
     }
 
-    private getActualCommand(content: string)
+    private getActualCommand(content: string): string
     {
         return content.replace(/ .*/, "").replace(/!/, "");
     }
@@ -250,14 +254,14 @@ export default class RaiderIoModule extends ResponderBotModule
 
     private findAndRemoveRoleParameter(args: string[]): string
     {
-      const roleArgs = ["tank", "healer", "dps"];
-      const role = args.find((a) => roleArgs.indexOf(a) > -1) || "";
-      const idx = args.findIndex((a) => a === role);
-      if (idx > -1)
-      {
-        args.splice(idx, 1);
-      }
-      return role;
+        const roleArgs = ["tank", "healer", "dps"];
+        const role = args.find((a) => roleArgs.indexOf(a) > -1) || "";
+        const idx = args.findIndex((a) => a === role);
+        if (idx > -1)
+        {
+            args.splice(idx, 1);
+        }
+        return role;
     }
 }
 
@@ -286,15 +290,15 @@ export interface IRaidData<T>
 }
 
 export interface IMythicPlusData<T>{
-  overall: T;
-  dps: T;
-  healer: T;
-  tank: T;
-  class: T;
-  class_dps: T;
-  class_healer: T;
-  class_tank: T;
-  [key: string]: T;
+    overall: T;
+    dps: T;
+    healer: T;
+    tank: T;
+    class: T;
+    class_dps: T;
+    class_healer: T;
+    class_tank: T;
+    [key: string]: T;
 }
 
 interface IRaidProgression
@@ -322,8 +326,8 @@ interface IMythicPlusScores{
 }
 
 interface IMythicPluseScore{
-  role: string;
-  score: number;
+    role: string;
+    score: number;
 }
 
 export interface IRaiderIOResponse
