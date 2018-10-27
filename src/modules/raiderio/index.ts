@@ -27,7 +27,7 @@ interface IRaiderIOCheckCommand{
 
 enum RaiderIOCommand {
     RANK = "rank",
-    CHECK = "check"
+    CHECK = "check",
 }
 
 export default class RaiderIoModule extends ResponderBotModule
@@ -44,10 +44,11 @@ export default class RaiderIoModule extends ResponderBotModule
 
     public getHelpText()
     {
-      const description = "__Description__: Instantly query Raider IO for guild or character rankings.";
-      const rankHelp = `__Usage (guild ranks)__: \`!rank [guild] [realm] [region]\`\n__Examples__: \`!rank\`, \`!rank Fresh\``;
-      const checkHelp = `__Usage (character ranks)__: \`!check [character] [realm] [region] [role]\`\n__Examples__: \`!check Chipstocks\`, \`!check Chipstocks tank\``;
-      const checkExtraInfoOnRoles = `__Possible roles__: \`tank\`, \`healer\`, \`dps\``;
+        const description = "__Description__: Instantly query Raider IO for guild or character rankings.";
+        const rankHelp = `__Usage (guild ranks)__: \`!rank [guild] [realm] [region]\`\n__Examples__: \`!rank\`, \`!rank Fresh\``;
+        const checkHelp = `__Usage (character ranks)__: \`!check [character] [realm] [region] [role]\`\n__Examples__: \`!check Chipstocks\`, \`!check Chipstocks tank\``;
+        const checkExtraInfoOnRoles = `__Possible roles__: \`tank\`, \`healer\`, \`dps\``;
+
         return {
             content: `${description}\n${rankHelp}\n${checkHelp}\n${checkExtraInfoOnRoles}`,
             moduleName: RaiderIoModule.MODULE_NAME,
@@ -57,24 +58,25 @@ export default class RaiderIoModule extends ResponderBotModule
     protected process(message: Discord.Message): string
     {
         const args = message.content.split(" ");
-        if(args && args.length){
-            let command = this.getActualCommand(args[0]);
+        if (args && args.length)
+        {
+            const command = this.getActualCommand(args[0]);
             switch (command){
                 case RaiderIOCommand.RANK: {
                     const cmd: IRaiderIORankCommand = {
                       name: args.length >= 2 ? args[1] : "Greggs",
                       realm: args.length >= 3 ? args[2] : "Draenor",
-                      region: args.length >= 4 ? args[3].toUpperCase() : "EU"
-                    }
+                      region: args.length >= 4 ? args[3].toUpperCase() : "EU",
+                    };
                     return this.executeRioRank(message, cmd);
                 }
                 case RaiderIOCommand.CHECK: {
-                  let roleArg = this.findAndRemoveRoleParameter(args);
+                  const roleArg = this.findAndRemoveRoleParameter(args);
                   const cmd: IRaiderIOCheckCommand = {
                     name: args.length >= 2 ? args[1] : "Chipstocks",
                     realm: args.length >= 3 ? args[2] : "Draenor",
                     region: args.length >= 4 ? args[3].toUpperCase() : "EU",
-                    role: roleArg
+                    role: roleArg,
                   };
                   return this.executeRioCheck(message, cmd);
                 }
@@ -83,7 +85,8 @@ export default class RaiderIoModule extends ResponderBotModule
         return "";
     }
 
-    protected executeRioRank(message: Discord.Message, command: IRaiderIORankCommand): string{
+    protected executeRioRank(message: Discord.Message, command: IRaiderIORankCommand): string
+    {
       // Meme override
       if (command.name.toLowerCase() === "quick")
       {
@@ -145,14 +148,16 @@ export default class RaiderIoModule extends ResponderBotModule
       return "";
     }
 
-    protected executeRioCheck(message: Discord.Message, command: IRaiderIOCheckCommand): string{
-      if (this.REGIONS.indexOf(command.region) === -1){
+    protected executeRioCheck(message: Discord.Message, command: IRaiderIOCheckCommand): string
+    {
+      if (this.REGIONS.indexOf(command.region) === -1)
+      {
         message.reply(`Where the fuck is ${command.region}? Try one of ${this.REGIONS.join(", ")}.`);
         return "";
       }
       if (command.name.toLowerCase() === "lightslayers")
       {
-        message.reply('Raider.io scores? LuL, might as well go back to gearscore, that was awful too!!')
+        message.reply("Raider.io scores? LuL, might as well go back to gearscore, that was awful too!!");
         return "";
       }
 
@@ -170,13 +175,13 @@ export default class RaiderIoModule extends ResponderBotModule
       {
         const maxScoreAndRole = this.maxMythicPlusScore(raiderIo.mythic_plus_scores);
         const roleToCheck = command.role || maxScoreAndRole.role;
-        const roleToCheckLabel = roleToCheck === 'dps' ? roleToCheck.toUpperCase() : `${roleToCheck[0].toUpperCase()}${roleToCheck.slice(1)}s`;
+        const roleToCheckLabel = roleToCheck === "dps" ? roleToCheck.toUpperCase() : `${roleToCheck[0].toUpperCase()}${roleToCheck.slice(1)}s`;
         const embed = new RichEmbed()
           .setTitle(`M+ Rankings for ${command.name} (${command.realm}-${command.region})`)
           .setColor(0xfaa61a)
           .setDescription(`Best score: **${maxScoreAndRole.score}** [${maxScoreAndRole.role}]`)
-          
-          .addField('All Classes & Roles', this.checkRankForMedal(raiderIo.mythic_plus_ranks.overall.realm), true)
+
+          .addField("All Classes & Roles", this.checkRankForMedal(raiderIo.mythic_plus_ranks.overall.realm), true)
           .addField(`All ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[roleToCheck].realm), true)
           .addField(`All ${raiderIo.class} ${roleToCheckLabel}`, this.checkRankForMedal(raiderIo.mythic_plus_ranks[`class_${roleToCheck}`].realm), true)
           .setURL(raiderIo.profile_url);
@@ -190,8 +195,8 @@ export default class RaiderIoModule extends ResponderBotModule
 
     protected isValidCommand(content: string): boolean
     {
-        const validCommands = Object.keys(RaiderIOCommand).map((key) => `${RaiderIOCommand[key as any]}`)
-        const command = this.getActualCommand(content); //gets first word up till space (which is the command, with ! removed)
+        const validCommands = Object.keys(RaiderIOCommand).map((key) => `${RaiderIOCommand[key as any]}`);
+        const command = this.getActualCommand(content); // Gets first word up till space (which is the command, with ! removed)
         return validCommands.indexOf(command) > -1;
     }
 
@@ -214,29 +219,42 @@ export default class RaiderIoModule extends ResponderBotModule
         return i + "th";
     }
 
-    private getActualCommand(content: string){
-        return content.replace(/ .*/, '').replace(/!/, '');
+    private getActualCommand(content: string)
+    {
+        return content.replace(/ .*/, "").replace(/!/, "");
     }
 
-    private maxMythicPlusScore(score: IMythicPlusScores): IMythicPluseScore {
-      let arr = Object.keys(score).filter((key) => key !== 'all').map((s) => {
-        return { role: s, score: score[s]};
-      });
-      let sorted = arr.sort((a, b) => b.score-a.score);
-      return sorted[0];
+    private maxMythicPlusScore(score: IMythicPlusScores): IMythicPluseScore
+    {
+        const arr = Object.keys(score).filter((key) => key !== "arr").map((s) =>
+        {
+            return { role: s, score: score[s]};
+        });
+
+        const sorted = arr.sort((a, b) => b.score - a.score);
+        return sorted[0];
     }
 
-    private checkRankForMedal(rank: number): string{
-      const medals = [":first_place:", ":second_place:", ":third_place:"];
-      if(rank === 0) return '0';
-      else return rank < medals.length ? medals[rank-1] : rank.toString();
+    private checkRankForMedal(rank: number): string
+    {
+        const medals = [":first_place:", ":second_place:", ":third_place:"];
+        if (rank === 0)
+        {
+            return "0";
+        }
+        else
+        {
+            return rank < medals.length ? medals[rank - 1] : rank.toString();
+        }
     }
 
-    private findAndRemoveRoleParameter(args: string[]) : string{
+    private findAndRemoveRoleParameter(args: string[]): string
+    {
       const roleArgs = ["tank", "healer", "dps"];
-      const role = args.find(a => roleArgs.indexOf(a)>-1) || '';
-      const idx = args.findIndex(a => a===role);
-      if(idx >-1){
+      const role = args.find((a) => roleArgs.indexOf(a) > -1) || "";
+      const idx = args.findIndex((a) => a === role);
+      if (idx > -1)
+      {
         args.splice(idx, 1);
       }
       return role;
