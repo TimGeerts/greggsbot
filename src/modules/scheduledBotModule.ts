@@ -1,14 +1,13 @@
 import Discord from "discord.js";
-import winston from "winston";
 
 import BaseModule from "./baseModule";
 import { IBotModule, IHelp } from "./botModule";
 
 export abstract class ScheduledBotModule extends BaseModule implements IBotModule
 {
-    constructor(client: Discord.Client, logger: winston.Logger, moduleName: string)
+    constructor(client: Discord.Client, moduleName: string)
     {
-       super(client, logger, moduleName);
+       super(client, moduleName);
     }
 
     public handleMessage(message: Discord.Message): void

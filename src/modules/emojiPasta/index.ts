@@ -1,7 +1,5 @@
 import Discord from "discord.js";
-import winston from "winston";
 
-import { IHelp } from "../botModule";
 import { ResponderBotModule } from "../responderBotModule";
 
 interface IEmojiPastaRefs
@@ -17,9 +15,9 @@ export default class EmojiPastaModule extends ResponderBotModule
     private readonly holidayKeys: string[];
     private readonly regularKeys: string[];
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
+    constructor(client: Discord.Client, prefix: string)
     {
-        super(client, logger, EmojiPastaModule.MODULE_NAME, prefix);
+        super(client, EmojiPastaModule.MODULE_NAME, prefix);
         this.pastas = require("../../../resources/emojiPastas.json");
         const holidayKeysKey = `holidayKeys`;
         const holidayKeys = this.pastas[holidayKeysKey];
