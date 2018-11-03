@@ -12,9 +12,9 @@ export default class WowTokenPrice extends ResponderBotModule
     private static GBP_COST = 15.00;
     private static EUR_COST = 20.00;
 
-    constructor(client: Discord.Client, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, WowTokenPrice.MODULE_NAME, prefix);
+        super(client, WowTokenPrice.MODULE_NAME);
     }
 
     public getHelpText(): IHelp

@@ -12,15 +12,7 @@ import WowTokenPrice from "./modules/wowtoken";
 
 import logger from "./logger";
 
-type BotCommand = (message: Discord.Message) => void;
-
-interface IBotCommands {
-  [k: string]: BotCommand;
-}
-
 export default class GreggsBot {
-
-  private static readonly PREFIX: string = "!";
 
   public readonly modules: IBotModule[] = [];
 
@@ -44,14 +36,14 @@ export default class GreggsBot {
 
   private initModules(): void
   {
-    this.modules.push(new RollBotModule(this.client, GreggsBot.PREFIX));
-    this.modules.push(new EmojiPastaModule(this.client, GreggsBot.PREFIX));
-    this.modules.push(new QuickLinksModule(this.client, GreggsBot.PREFIX));
+    this.modules.push(new RollBotModule(this.client));
+    this.modules.push(new EmojiPastaModule(this.client));
+    this.modules.push(new QuickLinksModule(this.client));
     this.modules.push(new RaidReminderModule(this.client));
-    this.modules.push(new RaiderIoModule(this.client, GreggsBot.PREFIX));
-    this.modules.push(new WowTokenPrice(this.client, GreggsBot.PREFIX));
-    this.modules.push(new WarcraftLogsModule(this.client, GreggsBot.PREFIX));
-    this.modules.push(new HelpModule(this.client, GreggsBot.PREFIX, () => this));
+    this.modules.push(new RaiderIoModule(this.client));
+    this.modules.push(new WowTokenPrice(this.client));
+    this.modules.push(new WarcraftLogsModule(this.client));
+    this.modules.push(new HelpModule(this.client, () => this));
     this.modules.forEach((m) => m.start());
   }
 
@@ -67,7 +59,8 @@ export default class GreggsBot {
   {
     try
     {
-      if (!message.content.startsWith(GreggsBot.PREFIX) || message.author.bot || message.guild === null)
+      const prefix = process.env.PREFIX || "!";
+      if (!message.content.startsWith(prefix) || message.author.bot || message.guild === null)
       {
         return;
       }

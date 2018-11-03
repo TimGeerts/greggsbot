@@ -15,9 +15,9 @@ export default class EmojiPastaModule extends ResponderBotModule
     private readonly holidayKeys: string[];
     private readonly regularKeys: string[];
 
-    constructor(client: Discord.Client, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, EmojiPastaModule.MODULE_NAME, prefix);
+        super(client, EmojiPastaModule.MODULE_NAME);
         this.pastas = require("../../../resources/emojiPastas.json");
         const holidayKeysKey = `holidayKeys`;
         const holidayKeys = this.pastas[holidayKeysKey];

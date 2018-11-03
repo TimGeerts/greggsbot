@@ -13,9 +13,9 @@ export default class QuickLinksModule extends ResponderBotModule
     private static readonly MODULE_NAME = "Quick Links";
     private readonly links: IQuickLinkRefs;
 
-    constructor(client: Discord.Client, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, QuickLinksModule.MODULE_NAME, prefix);
+        super(client, QuickLinksModule.MODULE_NAME);
         this.links = require("../../../resources/quickLinks.json");
     }
 

@@ -6,7 +6,7 @@ An all purpose Discord bot for the Greggs guild on Draenor-EU.
 
 Both prod and dev builds create `./dist/main.js`.
 
-Create `environment.env` from the `environment.env.example` file. Populate with the following API keys:
+Create `environment.env` from the `environment.env.example` file. Populate with the following values:
 
  * DISCORD_TOKEN
    * Your own Discord test bot API token.
@@ -16,6 +16,9 @@ Create `environment.env` from the `environment.env.example` file. Populate with 
    * Your own Warcraft Logs token
      * https://www.warcraftlogs.com/profile
      * Found in the Web API Keys section
+ * PREFIX
+   * The command prefix people should use to communicate with Greggs bot.
+   * Example: `PREFIX=!`
 
 ### Development build
 
