@@ -7,6 +7,5 @@ if (discordToken !== undefined)
 {
   new GreggsBot()
     .start(discordToken)
-    .then(() => logger.info(`Server started!`))
-    .catch(logger.error);
+    .then(() => logger.info(`Server started!`));
 }

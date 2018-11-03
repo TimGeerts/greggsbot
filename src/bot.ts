@@ -32,14 +32,10 @@ export default class GreggsBot {
     this.initListeners();
   }
 
-  public start(token: string): Promise<string>
+  public start(token: string): void
   {
-    return this.client.login(token)
-      .then((response: string) =>
-      {
-        this.initModules();
-        return response;
-      });
+    this.client.login(token)
+      .then((response: string) => this.initModules());
   }
 
   private initModules(): void

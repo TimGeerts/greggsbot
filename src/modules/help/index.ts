@@ -28,7 +28,7 @@ export default class HelpModule extends ResponderBotModule
             const moduleHelp = module.getHelpText();
             if (moduleHelp !== null)
             {
-                 moduleHelps.push(moduleHelp);
+                moduleHelps.push(moduleHelp);
             }
         });
 
