@@ -9,10 +9,17 @@ export abstract class ResponderBotModule extends BaseModule implements IBotModul
 {
     protected readonly prefix: string;
 
-    constructor(client: Discord.Client, moduleName: string, prefix: string)
+    constructor(client: Discord.Client, moduleName: string)
     {
         super(client, moduleName);
-        this.prefix = prefix;
+
+        let maybePrefix = process.env.PREFIX;
+        if (maybePrefix === undefined)
+        {
+            logger.warn("No prefix defined in config. Falling back to use '!'");
+            maybePrefix = "!";
+        }
+        this.prefix = maybePrefix;
     }
 
     public handleMessage(message: Discord.Message): void

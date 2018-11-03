@@ -12,9 +12,9 @@ export default class WarcraftLogsModule extends ResponderBotModule
     private readonly WCL_TOKEN = process.env.WCL_TOKEN;
     private readonly MAX_LOGS = 3;
 
-    constructor(client: Discord.Client, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, WarcraftLogsModule.MODULE_NAME, prefix);
+        super(client, WarcraftLogsModule.MODULE_NAME);
     }
 
     public getHelpText(): IHelp

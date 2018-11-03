@@ -32,9 +32,9 @@ export default class RaiderIoModule extends ResponderBotModule
     private readonly RAIDER_IO_GUILD_URL = "https://raider.io/api/v1/guilds/profile";
     private readonly RAIDER_IO_CHAR_URL = "https://raider.io/api/v1/characters/profile";
 
-    constructor(client: Discord.Client, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, RaiderIoModule.MODULE_NAME, prefix);
+        super(client, RaiderIoModule.MODULE_NAME);
     }
 
     public getHelpText()

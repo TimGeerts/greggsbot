@@ -9,9 +9,9 @@ export default class HelpModule extends ResponderBotModule
     private static readonly MODULE_NAME = "Helper";
     private readonly getBot: () => GreggsBot;
 
-    constructor(client: Discord.Client, prefix: string, getBot: () => GreggsBot)
+    constructor(client: Discord.Client, getBot: () => GreggsBot)
     {
-        super(client, HelpModule.MODULE_NAME, prefix);
+        super(client, HelpModule.MODULE_NAME);
         this.getBot = getBot;
     }
 
