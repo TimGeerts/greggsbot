@@ -51,7 +51,7 @@ export default class RaidReminderModule extends ScheduledBotModule
             }
 
             const channel = this.client.channels.find((ch) => ch.id === entry.channelId);
-            if (channel === undefined)
+            if (channel === undefined || channel === null)
             {
                 this.logger.error(`Cannot find channel with ID parsed in "${entry.title}" [${entry.channelId}]`);
                 return false;
@@ -63,7 +63,7 @@ export default class RaidReminderModule extends ScheduledBotModule
             }
 
             const guild = this.client.guilds.find((gd) => gd.id === entry.guildId);
-            if (guild === undefined)
+            if (guild === undefined || guild === null)
             {
                 this.logger.error(`Tried to set up scheduler for a guild which client isn't connected to "${entry.title}" [${entry.guildId}]`);
             }
