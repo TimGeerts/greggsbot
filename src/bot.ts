@@ -60,7 +60,7 @@ export default class GreggsBot {
     this.client.on("ready", () => logger.info(`Logged in as ${this.client.user.tag}`));
     this.client.on("error", (error: string) => logger.error(error));
     this.client.on("warn", (warning: string) => logger.warn(warning));
-    this.client.on("message", (message) => this.handleMessage);
+    this.client.on("message", (message) => this.handleMessage(message));
   }
 
   private handleMessage = (message: Discord.Message) =>
