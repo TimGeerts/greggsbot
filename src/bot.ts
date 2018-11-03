@@ -35,7 +35,11 @@ export default class GreggsBot {
   public start(token: string): void
   {
     this.client.login(token)
-      .then((response: string) => this.initModules());
+      .then((response: string) =>
+      {
+        logger.info(`Client authenticated`);
+        this.initModules();
+      });
   }
 
   private initModules(): void
