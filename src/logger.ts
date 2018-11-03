@@ -19,4 +19,6 @@ const logger = createLogger({
     ],
 });
 
+logger.exitOnError = false;
+
 export default logger;
