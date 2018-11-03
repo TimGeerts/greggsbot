@@ -1,7 +1,6 @@
 import Discord, { MessageEmbed, RichEmbed } from "discord.js";
 import moment from "moment";
 import fetch, {Response} from "node-fetch";
-import winston from "winston";
 
 import { IHelp } from "../botModule";
 import { ResponderBotModule } from "../responderBotModule";
@@ -13,9 +12,9 @@ export default class WowTokenPrice extends ResponderBotModule
     private static GBP_COST = 15.00;
     private static EUR_COST = 20.00;
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
+    constructor(client: Discord.Client, prefix: string)
     {
-        super(client, logger, WowTokenPrice.MODULE_NAME, prefix);
+        super(client, WowTokenPrice.MODULE_NAME, prefix);
     }
 
     public getHelpText(): IHelp

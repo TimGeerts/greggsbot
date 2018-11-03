@@ -1,6 +1,5 @@
 import Discord, { RichEmbed } from "discord.js";
 import fetch from "node-fetch";
-import winston from "winston";
 
 import { ResponderBotModule } from "../responderBotModule";
 
@@ -33,9 +32,9 @@ export default class RaiderIoModule extends ResponderBotModule
     private readonly RAIDER_IO_GUILD_URL = "https://raider.io/api/v1/guilds/profile";
     private readonly RAIDER_IO_CHAR_URL = "https://raider.io/api/v1/characters/profile";
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
+    constructor(client: Discord.Client, prefix: string)
     {
-        super(client, logger, RaiderIoModule.MODULE_NAME, prefix);
+        super(client, RaiderIoModule.MODULE_NAME, prefix);
     }
 
     public getHelpText()

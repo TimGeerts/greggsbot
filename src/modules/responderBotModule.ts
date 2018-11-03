@@ -1,16 +1,17 @@
 import Discord from "discord.js";
-import winston from "winston";
 
 import BaseModule from "./baseModule";
 import { IBotModule, IHelp } from "./botModule";
+
+import logger from "../logger";
 
 export abstract class ResponderBotModule extends BaseModule implements IBotModule
 {
     protected readonly prefix: string;
 
-    constructor(client: Discord.Client, logger: winston.Logger, moduleName: string, prefix: string)
+    constructor(client: Discord.Client, moduleName: string, prefix: string)
     {
-        super(client, logger, moduleName);
+        super(client, moduleName);
         this.prefix = prefix;
     }
 
@@ -18,9 +19,9 @@ export abstract class ResponderBotModule extends BaseModule implements IBotModul
     {
         if (message.content.startsWith(this.prefix) && this.isValidCommand(message.content))
         {
-            this.logger.info(`[${this.moduleName}] <- [${message.content}]`);
+            logger.info(`[${this.moduleName}] <- [${message.content}]`);
             const response = this.process(message);
-            this.logger.info(`[${this.moduleName}] -> [${response}]`);
+            logger.info(`[${this.moduleName}] -> [${response}]`);
         }
     }
 

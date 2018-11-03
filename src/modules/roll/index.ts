@@ -1,7 +1,5 @@
 import Discord from "discord.js";
-import winston, { Logger } from "winston";
 
-import { IHelp } from "../botModule";
 import { ResponderBotModule } from "../responderBotModule";
 import RollDuel from "./rollDuel";
 import RollDuelManager from "./rollDuelManager";
@@ -19,9 +17,9 @@ export default class RollBotModule extends ResponderBotModule
 
     private readonly duelManager: RollDuelManager;
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
+    constructor(client: Discord.Client, prefix: string)
     {
-        super(client, logger, RollBotModule.MODULE_NAME, prefix);
+        super(client, RollBotModule.MODULE_NAME, prefix);
         this.duelManager = new RollDuelManager();
     }
 
