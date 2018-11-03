@@ -57,44 +57,26 @@ export default class GreggsBot {
 
   private initListeners(): void
   {
-    this.client.on("ready", this.handleReady);
-    this.client.on("error", this.handleError);
-    this.client.on("warn", this.handleWarn);
-    this.client.on("message", (message) =>
-    {
-      try
-      {
-        this.handleMessage(message);
-      }
-      catch (error)
-      {
-        logger.error(error);
-      }
-    });
-  }
-
-  private handleWarn = (warning: string) =>
-  {
-    logger.warn(warning);
-  }
-
-  private handleError = (error: Error) =>
-  {
-    logger.error(error);
-  }
-
-  private handleReady = () =>
-  {
-    logger.info(`Logged in as ${this.client.user.tag}`);
+    this.client.on("ready", () => logger.info(`Logged in as ${this.client.user.tag}`));
+    this.client.on("error", (error: string) => logger.error(error));
+    this.client.on("warn", (warning: string) => logger.warn(warning));
+    this.client.on("message", (message) => this.handleMessage);
   }
 
   private handleMessage = (message: Discord.Message) =>
   {
-    if (!message.content.startsWith(GreggsBot.PREFIX) || message.author.bot || message.guild === null)
+    try
     {
-      return;
-    }
+      if (!message.content.startsWith(GreggsBot.PREFIX) || message.author.bot || message.guild === null)
+      {
+        return;
+      }
 
-    this.modules.forEach((m) => m.handleMessage(message));
+      this.modules.forEach((m) => m.handleMessage(message));
+    }
+    catch (error)
+    {
+      logger.error(error);
+    }
   }
 }
