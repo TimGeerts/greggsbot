@@ -1,6 +1,6 @@
 import Discord, { RichEmbed } from "discord.js";
 import fetch from "node-fetch";
-
+import logger from "../../logger";
 import { ResponderBotModule } from "../responderBotModule";
 
 interface IRaiderIORankCommand
@@ -162,7 +162,7 @@ export default class RaiderIoModule extends ResponderBotModule
           }
 
         const URL = `${this.RAIDER_IO_CHAR_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=guild,mythic_plus_scores,mythic_plus_ranks`;
-
+        
         fetch(URL, {method: "GET"})
         .then((response) =>
         {
@@ -229,7 +229,7 @@ export default class RaiderIoModule extends ResponderBotModule
 
     private maxMythicPlusScore(score: IMythicPlusScores): IMythicPluseScore
     {
-        const arr = Object.keys(score).filter((key) => key !== "arr").map((s) =>
+        const arr = Object.keys(score).filter((key) => key !== "all").map((s) =>
         {
             return { role: s, score: score[s]};
         });
