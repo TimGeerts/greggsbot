@@ -11,6 +11,7 @@ import WarcraftLogsModule from "./modules/warcraftLogs";
 import WowTokenPrice from "./modules/wowtoken";
 
 import logger from "./logger";
+import GuidesModule from "./modules/guides";
 
 export default class GreggsBot {
 
@@ -43,6 +44,7 @@ export default class GreggsBot {
     this.modules.push(new RaiderIoModule(this.client));
     this.modules.push(new WowTokenPrice(this.client));
     this.modules.push(new WarcraftLogsModule(this.client));
+    this.modules.push(new GuidesModule(this.client));
     this.modules.push(new HelpModule(this.client, () => this));
     this.modules.forEach((m) => m.start());
   }
