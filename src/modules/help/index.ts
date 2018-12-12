@@ -1,8 +1,7 @@
 import Discord from "discord.js";
-import winston from "winston";
 
 import GreggsBot from "../../bot";
-import { IBotModule, IHelp } from "../botModule";
+import { IHelp } from "../botModule";
 import { ResponderBotModule } from "../responderBotModule";
 
 export default class HelpModule extends ResponderBotModule
@@ -10,9 +9,9 @@ export default class HelpModule extends ResponderBotModule
     private static readonly MODULE_NAME = "Helper";
     private readonly getBot: () => GreggsBot;
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string, getBot: () => GreggsBot)
+    constructor(client: Discord.Client, getBot: () => GreggsBot)
     {
-        super(client, logger, HelpModule.MODULE_NAME, prefix);
+        super(client, HelpModule.MODULE_NAME);
         this.getBot = getBot;
     }
 
@@ -29,7 +28,7 @@ export default class HelpModule extends ResponderBotModule
             const moduleHelp = module.getHelpText();
             if (moduleHelp !== null)
             {
-                 moduleHelps.push(moduleHelp);
+                moduleHelps.push(moduleHelp);
             }
         });
 

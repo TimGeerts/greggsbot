@@ -1,7 +1,6 @@
 import Discord from "discord.js";
 import moment from "moment";
 import fetch from "node-fetch";
-import winston from "winston";
 
 import { IHelp } from "../botModule";
 import { ResponderBotModule } from "../responderBotModule";
@@ -13,9 +12,9 @@ export default class WarcraftLogsModule extends ResponderBotModule
     private readonly WCL_TOKEN = process.env.WCL_TOKEN;
     private readonly MAX_LOGS = 3;
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, logger, WarcraftLogsModule.MODULE_NAME, prefix);
+        super(client, WarcraftLogsModule.MODULE_NAME);
     }
 
     public getHelpText(): IHelp

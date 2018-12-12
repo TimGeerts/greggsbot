@@ -1,8 +1,9 @@
 import Discord, {Collection} from "discord.js";
 import {schedule, validate} from "node-cron";
-import winston from "winston";
 
 import { ScheduledBotModule } from "../scheduledBotModule";
+
+import logger from "../../logger";
 
 interface IScheduledReminder
 {
@@ -19,9 +20,9 @@ export default class RaidReminderModule extends ScheduledBotModule
 {
     private reminders: IScheduledReminder[] = [];
 
-    constructor(client: Discord.Client, logger: winston.Logger)
+    constructor(client: Discord.Client)
     {
-        super(client, logger, "RaidReminder");
+        super(client, "RaidReminder");
     }
 
     public start(): void
@@ -46,32 +47,32 @@ export default class RaidReminderModule extends ScheduledBotModule
 
             if (validate(entry.cron) === false)
             {
-                this.logger.error(`Invalid cron parsed in "${entry.title}" [${entry.cron}]`);
+                logger.error(`Invalid cron parsed in "${entry.title}" [${entry.cron}]`);
                 return false;
             }
 
             const channel = this.client.channels.find((ch) => ch.id === entry.channelId);
-            if (channel === undefined)
+            if (channel === undefined || channel === null)
             {
-                this.logger.error(`Cannot find channel with ID parsed in "${entry.title}" [${entry.channelId}]`);
+                logger.error(`Cannot find channel with ID parsed in "${entry.title}" [${entry.channelId}]`);
                 return false;
             }
             else if (channel.type !== "text")
             {
-                this.logger.error(`Found channel but it is of the wrong type "${entry.title}" [${channel.type}]`);
+                logger.error(`Found channel but it is of the wrong type "${entry.title}" [${channel.type}]`);
                 return false;
             }
 
             const guild = this.client.guilds.find((gd) => gd.id === entry.guildId);
-            if (guild === undefined)
+            if (guild === undefined || guild === null)
             {
-                this.logger.error(`Tried to set up scheduler for a guild which client isn't connected to "${entry.title}" [${entry.guildId}]`);
+                logger.error(`Tried to set up scheduler for a guild which client isn't connected to "${entry.title}" [${entry.guildId}]`);
             }
 
             return true;
         });
 
-        this.logger.info(`Parsed ${result.length} reminders in ${this.moduleName}`);
+        logger.info(`Parsed ${result.length} reminders in ${this.moduleName}`);
 
         return result;
     }
@@ -81,14 +82,14 @@ export default class RaidReminderModule extends ScheduledBotModule
         const guild = this.client.guilds.get(reminder.guildId);
         if (guild === undefined)
         {
-            this.logger.error(`Could not send scheduled message for guild. Have I been kicked? [${reminder.guildId}]`);
+            logger.error(`Could not send scheduled message for guild. Have I been kicked? [${reminder.guildId}]`);
             return;
         }
 
         const channel = this.client.channels.get(reminder.channelId) as Discord.TextChannel;
         if (channel === undefined)
         {
-            this.logger.error(`Could not send scheduled message to channel. It does not exist. [${reminder.channelId}]`);
+            logger.error(`Could not send scheduled message to channel. It does not exist. [${reminder.channelId}]`);
             return;
         }
 
@@ -109,7 +110,7 @@ export default class RaidReminderModule extends ScheduledBotModule
 
             if (guildRole === undefined)
             {
-                this.logger.error(`Could not find the role for mention. ${mention}]`);
+                logger.error(`Could not find the role for mention. ${mention}]`);
                 return;
             }
             else

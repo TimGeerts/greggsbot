@@ -1,7 +1,6 @@
 import Discord, { RichEmbed } from "discord.js";
 import fetch from "node-fetch";
-import winston from "winston";
-
+import logger from "../../logger";
 import { ResponderBotModule } from "../responderBotModule";
 
 interface IRaiderIORankCommand
@@ -33,9 +32,9 @@ export default class RaiderIoModule extends ResponderBotModule
     private readonly RAIDER_IO_GUILD_URL = "https://raider.io/api/v1/guilds/profile";
     private readonly RAIDER_IO_CHAR_URL = "https://raider.io/api/v1/characters/profile";
 
-    constructor(client: Discord.Client, logger: winston.Logger, prefix: string)
+    constructor(client: Discord.Client)
     {
-        super(client, logger, RaiderIoModule.MODULE_NAME, prefix);
+        super(client, RaiderIoModule.MODULE_NAME);
     }
 
     public getHelpText()
@@ -163,7 +162,7 @@ export default class RaiderIoModule extends ResponderBotModule
           }
 
         const URL = `${this.RAIDER_IO_CHAR_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=guild,mythic_plus_scores,mythic_plus_ranks`;
-
+        
         fetch(URL, {method: "GET"})
         .then((response) =>
         {
@@ -230,7 +229,7 @@ export default class RaiderIoModule extends ResponderBotModule
 
     private maxMythicPlusScore(score: IMythicPlusScores): IMythicPluseScore
     {
-        const arr = Object.keys(score).filter((key) => key !== "arr").map((s) =>
+        const arr = Object.keys(score).filter((key) => key !== "all").map((s) =>
         {
             return { role: s, score: score[s]};
         });

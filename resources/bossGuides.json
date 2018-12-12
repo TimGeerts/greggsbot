@@ -1,0 +1,108 @@
+{
+  "raids": [
+    {
+      "name": "Uldir",
+      "tags": ["uldir"],
+      "bosses": [
+        { 
+          "name": "Taloc",
+          "tags": ["taloc"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-taloc.png",
+          "description": "The titan keepers enacted countless systems to detect and contain any breach from the facility. Their most powerful construct, Taloc, kept watch for any signs of corruption in the region and ruthlessly excised any that he found. But as thousands of years passed, its internal defenses began to decay, making it vulnerable to corruption.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-taloc-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=2MZ85mVbBrE"
+        },
+        { 
+          "name": "MOTHER",
+          "tags": ["mother"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-mother.png",
+          "description": "Uldir's titanic watcher was gifted with tenacity and an insatiable desire to discover a *solution* to the Old Gods. Her protocols have remained fully intact, even though many other systems in the facility have collapsed. WARNING: M.O.T.H.E.R. will not accept aid from contaminated subjects.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-mother-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=RC4FB2O0F10"
+        },
+        { 
+          "name": "Fetid Devourer",
+          "tags": ["fetid", "fetid devourer", "doggo"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-fetiddevourer.png",
+          "description": "The experiments within Uldir conducted tests upon countless lifeforms, including several loa who inhabited the forests around Zandalar. After the experiments proved lethal, the loa's remains were disposed of improperly, much to the delight of the dark consciousness imprisoned within Uldir.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-fetid-devourer-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=csUK3Mn3MPk"
+        },
+        { 
+          "name": "Zek'voz",
+          "tags": ["zek'voz", "zekvoz", "zek"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-zekvozheraldofnzoth.png",
+          "description": "Shortly after the Sundering, a dark messenger arrived on the fresh shores of Zandalar, intending to bring the newly isolated tribe into the service of N'Zoth. Zek'voz was prepared to entice, bribe, cajole, corrupt, or simply kill them, but he was not prepared to encounter the defenses of Uldir. He was captured, studied, disassembled, and stored in the Titans' Archives, where he has waited for a chance to escape.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-zekvoz-herald-of-nzoth-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=LERyT1kzYFA"
+        },
+        { 
+          "name": "Vectis",
+          "tags": ["vectis"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-vectis.png",
+          "description": "The plague of corrupted blood killed countless trolls and began one of the most terrifying periods in Zandalar's history. The constructs within Uldir studied the disease in search of a cure, but found that only isolation and extermination was effective. Unfortunately, as the facility's safeguards cracked apart, the plague was accidentally combined with a sample of G'huun's blood, creating a new entity that hungered for fresh victims.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-vectis-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=dxlChs7MoIk"
+        },
+        { 
+          "name": "Zul, Reborn",
+          "tags": ["zul", "zul reborn", "zul, reborn"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-zulreborn.png",
+          "description": "Once the proud leader of the Zanchuli Council, highest advisor to the kings of Zandalar, Zul was praised as the greatest of prophets. Now, the dark prophet has turned on King Rastakhan and would see a true troll empire rule the world once again, even if it means submitting to the blood god: G'huun.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-zul-reborn-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=XgUeo6lrNlA"
+        },
+        { 
+          "name": "Mythrax",
+          "tags": ["mythrax"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-mythraxtheunraveler.png",
+          "description": "Mythrax the Unraveler, Bringer of Oblivion, Slayer of Sethraliss: with his mission complete, he returns to his master's side to await further instruction.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-mythrax-the-unraveler-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=9n321O8R_9Y",
+          "extra": [
+            {
+              "name": "Reddit",
+              "content": "https://www.reddit.com/r/CompetitiveWoW/comments/9vca4c/mythic_mythrax_tips_tricks/"
+            },
+            {
+              "name": "Twitch",
+              "content": "https://www.twitch.tv/videos/333460870"
+            },
+            {
+              "name": "Weakauras",
+              "content": "https://wago.io/HJGLGXx9X"
+            }
+          ]
+        },
+        { 
+          "name": "G'huun",
+          "tags": ["g'huun", "ghuun", "goon", "snail"],
+          "thumbnail": "https://wow.zamimg.com/images/wow/journal/ui-ej-boss-ghuun.png",
+          "description": "In Uldir, the titans had hoped to find a solution to the Old Gods. But when experimenting upon the Old Gods' unending, ravenous need to corrupt, they unexpectedly created a perfect avatar of that desire. G'huun is nothing but rot, pestilence, and decay, the ultimate parasite who cannot stop himself from consuming his host until it is gone.",
+          "wowhead": "https://www.wowhead.com/guides/mythic-ghuun-uldir-raid-strategy-guide",
+          "youtube": "https://www.youtube.com/watch?v=pcdVPdhYXyo",
+          "extra": [
+            {
+              "name": "Reddit",
+              "content": "https://www.reddit.com/r/CompetitiveWoW/comments/9wjahd/mythic_ghuun_guidetipstricks/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Battle for Dazar'alor",
+      "tags": ["battle for dazar'alor", "battle for dazaralor", "battle", "dazar'alor", "dazaralor", "bfd"],
+      "bosses": [
+        { 
+          "name": "Jaina Proudmore",
+          "tags": ["jaina proudmore", "jaina"]
+        }
+      ]
+    },
+    {
+      "name": "Crucible of Storms",
+      "tags": ["crucible", "cos", "storms"]
+    }
+  ]
+}
