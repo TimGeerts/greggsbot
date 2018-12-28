@@ -19,6 +19,10 @@ Create `environment.env` from the `environment.env.example` file. Populate with 
  * PREFIX
    * The command prefix people should use to communicate with Greggs bot.
    * Example: `PREFIX=!`
+ * API
+   * The base URL for the JSON API
+     * Used to fetch data for different modules
+     * See each module's api.d.ts
 
 ### Development build
 
