@@ -1,5 +1,6 @@
 import Discord, { RichEmbed } from "discord.js";
 import fetch from "node-fetch";
+import logger from "../../logger";
 import { ResponderBotModule } from "../responderBotModule";
 
 interface IRaid {
@@ -32,13 +33,21 @@ interface IGuideCommand {
 export default class GuidesModule extends ResponderBotModule
 {
     private static readonly MODULE_NAME = "Raid Guides";
-    private readonly FIREBASE_URL = "https://greggs-d6c7a.firebaseio.com/";
+    private apiUrl: string;
     private raids: IRaid[];
 
     constructor(client: Discord.Client)
     {
       super(client, GuidesModule.MODULE_NAME);
       this.raids = new Array<IRaid>();
+
+      const maybeFirebaseUrl = process.env.API;
+      if (maybeFirebaseUrl === undefined)
+      {
+        logger.error("API url not sent in process envs");
+        throw new Error("");
+      }
+      this.apiUrl = maybeFirebaseUrl;
     }
 
     public getHelpText()
@@ -76,7 +85,7 @@ export default class GuidesModule extends ResponderBotModule
 
     private handleCommand(cmd: IGuideCommand, message: Discord.Message)
     {
-      const URL = `${this.FIREBASE_URL}raids.json`;
+      const URL = `${this.apiUrl}raids.json`;
       fetch(URL).then((r) =>
       {
         if (r.ok)
