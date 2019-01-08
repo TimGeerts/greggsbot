@@ -1,10 +1,10 @@
 import Discord, { RichEmbed } from "discord.js";
-import fetch from "node-fetch";
-import logger from "../../logger";
+import { ResourceService } from "../../services/resource.service";
 import { ResponderBotModule } from "../responderBotModule";
 
 interface IRaid {
   name: string;
+  description: string;
   tags: string[];
   bosses: IBoss[];
 }
@@ -33,21 +33,14 @@ interface IGuideCommand {
 export default class GuidesModule extends ResponderBotModule
 {
     private static readonly MODULE_NAME = "Raid Guides";
-    private apiUrl: string;
+    private resourceService: ResourceService;
     private raids: IRaid[];
 
-    constructor(client: Discord.Client)
+    constructor(client: Discord.Client, resourceService: ResourceService)
     {
       super(client, GuidesModule.MODULE_NAME);
+      this.resourceService = resourceService;
       this.raids = new Array<IRaid>();
-
-      const maybeFirebaseUrl = process.env.API;
-      if (maybeFirebaseUrl === undefined)
-      {
-        logger.error("API url not sent in process envs");
-        throw new Error("");
-      }
-      this.apiUrl = maybeFirebaseUrl;
     }
 
     public getHelpText()
@@ -85,28 +78,29 @@ export default class GuidesModule extends ResponderBotModule
 
     private handleCommand(cmd: IGuideCommand, message: Discord.Message)
     {
-      const URL = `${this.apiUrl}raids.json`;
-      fetch(URL).then((r) =>
-      {
-        if (r.ok)
-        {
-            return r.json();
-        }
-        throw new Error(r.statusText);
-      }).then((raids: IRaid[]) =>
+      this.resourceService.getRaidGuides().then((raids: IRaid[]) =>
       {
         this.raids = raids;
         const guide = this.lookupBossGuide(cmd);
         if (!guide)
         {
-          let msg = `No guide was found for a boss named "${cmd.boss}"`;
-          msg += cmd.raid ? `in a raid named "${cmd.raid}."` : `.`;
-          msg += `\nBut here, have a cookie :cookie:.`;
-          throw new Error(msg);
+          // One more option is to check if the "boss" argument is acutally a raid, so we can list out all available guides for that raid
+          const raid = this.lookupRaid(cmd.boss);
+          if (!raid)
+          {
+            let msg = `No guide was found for a boss named "${cmd.boss}"`;
+            msg += cmd.raid ? `in a raid named "${cmd.raid}."` : `.`;
+            msg += `\nBut here, have a cookie :cookie:.`;
+            throw new Error(msg);
+          }
+          else
+          {
+            this.replyRaid(raid, message);
+          }
         }
         else
         {
-          this.reply(guide, message);
+          this.replyBoss(guide, message);
         }
       }).catch((err: Error) =>
       {
@@ -114,7 +108,7 @@ export default class GuidesModule extends ResponderBotModule
       });
     }
 
-    private reply(guide: IBoss, message: Discord.Message)
+    private replyBoss(guide: IBoss, message: Discord.Message)
     {
       const embed = new RichEmbed()
       .setTitle(`__${guide.name} Mythic - ${guide.raid}__`)
@@ -142,6 +136,31 @@ export default class GuidesModule extends ResponderBotModule
         {
           embed.addField(e.name, e.content);
         });
+      }
+      message.reply(embed);
+    }
+
+    private replyRaid(raid: IRaid, message: Discord.Message)
+    {
+      const embed = new RichEmbed()
+      .setTitle(`__${raid.name} (Battle for Azeroth)__`)
+      .setColor(0xff0000);
+      if (raid.description)
+      {
+        embed.setDescription(raid.description);
+      }
+      if (raid.bosses && raid.bosses.length)
+      {
+        let guides = "";
+        raid.bosses.forEach((boss) =>
+        {
+          if (boss.tags && boss.tags.length)
+          {
+            const firsttag = boss.tags[0];
+            guides += `  **${boss.name}:** \`!guide ${firsttag}\`\n`;
+          }
+        });
+        embed.addField("Available guide commands", guides);
       }
       message.reply(embed);
     }

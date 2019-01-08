@@ -12,16 +12,18 @@ import WowTokenPrice from "./modules/wowtoken";
 
 import logger from "./logger";
 import GuidesModule from "./modules/guides";
+import { ResourceService } from "./services/resource.service";
 
 export default class GreggsBot {
 
   public readonly modules: IBotModule[] = [];
-
   private readonly client: Discord.Client;
+  private readonly resourceService: ResourceService;
 
   constructor()
   {
     this.client = new Discord.Client();
+    this.resourceService = new ResourceService();
     this.initListeners();
   }
 
@@ -38,13 +40,13 @@ export default class GreggsBot {
   private initModules(): void
   {
     this.modules.push(new RollBotModule(this.client));
-    this.modules.push(new EmojiPastaModule(this.client));
-    this.modules.push(new QuickLinksModule(this.client));
-    this.modules.push(new RaidReminderModule(this.client));
+    this.modules.push(new EmojiPastaModule(this.client, this.resourceService));
+    this.modules.push(new QuickLinksModule(this.client, this.resourceService));
+    this.modules.push(new RaidReminderModule(this.client, this.resourceService));
     this.modules.push(new RaiderIoModule(this.client));
     this.modules.push(new WowTokenPrice(this.client));
     this.modules.push(new WarcraftLogsModule(this.client));
-    this.modules.push(new GuidesModule(this.client));
+    this.modules.push(new GuidesModule(this.client, this.resourceService));
     this.modules.push(new HelpModule(this.client, () => this));
     this.modules.forEach((m) => m.start());
   }

@@ -1,6 +1,6 @@
-import Discord, {Collection} from "discord.js";
+import Discord from "discord.js";
 import {schedule, validate} from "node-cron";
-
+import { ResourceService } from "../../services/resource.service";
 import { ScheduledBotModule } from "../scheduledBotModule";
 
 import logger from "../../logger";
@@ -16,34 +16,59 @@ interface IScheduledReminder
     disabled?: boolean;
 }
 
+interface IReminder
+{
+  enabled: boolean;
+  cron: string;
+  guild: string;
+  channel: string;
+  mentions: string[];
+  title: string;
+  message: string;
+}
+
 export default class RaidReminderModule extends ScheduledBotModule
 {
-    private reminders: IScheduledReminder[] = [];
+    private static readonly MODULE_NAME = "RaidReminder";
+    private resourceService: ResourceService;
+    private reminders: IReminder[] = [];
 
-    constructor(client: Discord.Client)
+    constructor(client: Discord.Client, resourceService: ResourceService)
     {
-        super(client, "RaidReminder");
+      super(client, RaidReminderModule.MODULE_NAME);
+      this.resourceService = resourceService;
+      this.reminders = new Array<IReminder>();
     }
 
     public start(): void
     {
-        const reminderData: IScheduledReminder[] = require("../../../resources/raidReminder.json");
-        this.reminders = this.parseRemindersJson(reminderData);
-
-        this.reminders.forEach((reminder) =>
+        this.resourceService.getReminders().then((reminders: IReminder[]) =>
         {
-            schedule(reminder.cron, () => this.sendReminder(reminder));
+          this.reminders = this.parseRemindersJson(reminders);
+          this.reminders.forEach((reminder) =>
+          {
+              schedule(reminder.cron, () => this.sendReminder(reminder));
+          });
+        }).catch((err: Error) =>
+        {
+          logger.error(err.message);
         });
     }
 
-    private parseRemindersJson(reminderData: IScheduledReminder[]): IScheduledReminder[]
+    private parseRemindersJson(reminderData: IReminder[]): IReminder[]
     {
-        const result: IScheduledReminder[] = reminderData.filter((entry) =>
+        const result: IReminder[] = reminderData.filter((entry) =>
         {
-            if (entry.disabled)
+            if (!entry.enabled)
             {
                 return false;
             }
+
+            // Uncomment for debug if you want to use your own channels/guilds/mentions to test stuff
+            // Make sure to change the ids so they match your own discord server
+            // entry.guild = "504796984519950355";
+            // entry.channel = "504796985191301150";
+            // entry.mentions = ["TestRaider"];
 
             if (validate(entry.cron) === false)
             {
@@ -51,10 +76,10 @@ export default class RaidReminderModule extends ScheduledBotModule
                 return false;
             }
 
-            const channel = this.client.channels.find((ch) => ch.id === entry.channelId);
+            const channel = this.client.channels.find((ch) => ch.id === entry.channel);
             if (channel === undefined || channel === null)
             {
-                logger.error(`Cannot find channel with ID parsed in "${entry.title}" [${entry.channelId}]`);
+                logger.error(`Cannot find channel with ID parsed in "${entry.title}" [${entry.channel}]`);
                 return false;
             }
             else if (channel.type !== "text")
@@ -63,33 +88,31 @@ export default class RaidReminderModule extends ScheduledBotModule
                 return false;
             }
 
-            const guild = this.client.guilds.find((gd) => gd.id === entry.guildId);
+            const guild = this.client.guilds.find((gd) => gd.id === entry.guild) || process.env.GUILDID;
             if (guild === undefined || guild === null)
             {
-                logger.error(`Tried to set up scheduler for a guild which client isn't connected to "${entry.title}" [${entry.guildId}]`);
+                logger.error(`Tried to set up scheduler for a guild which client isn't connected to "${entry.title}" [${entry.guild}]`);
             }
 
             return true;
         });
-
         logger.info(`Parsed ${result.length} reminders in ${this.moduleName}`);
-
         return result;
     }
 
-    private sendReminder(reminder: IScheduledReminder): void
+    private sendReminder(reminder: IReminder): void
     {
-        const guild = this.client.guilds.get(reminder.guildId);
+        const guild = this.client.guilds.get(reminder.guild);
         if (guild === undefined)
         {
-            logger.error(`Could not send scheduled message for guild. Have I been kicked? [${reminder.guildId}]`);
+            logger.error(`Could not send scheduled message for guild. Have I been kicked? [${reminder.guild}]`);
             return;
         }
 
-        const channel = this.client.channels.get(reminder.channelId) as Discord.TextChannel;
+        const channel = this.client.channels.get(reminder.channel) as Discord.TextChannel;
         if (channel === undefined)
         {
-            logger.error(`Could not send scheduled message to channel. It does not exist. [${reminder.channelId}]`);
+            logger.error(`Could not send scheduled message to channel. It does not exist. [${reminder.channel}]`);
             return;
         }
 
@@ -98,7 +121,7 @@ export default class RaidReminderModule extends ScheduledBotModule
         channel.send(`${pingString.length > 0 ? `${pingString}\n` : ""}${reminder.message}`);
     }
 
-    private getPingStringForReminder(reminder: IScheduledReminder, guild: Discord.Guild): string
+    private getPingStringForReminder(reminder: IReminder, guild: Discord.Guild): string
     {
         const idsToMention: Discord.Snowflake[] = [];
         reminder.mentions.forEach((mention) =>
