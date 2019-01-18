@@ -6,6 +6,7 @@ interface IRaid {
   name: string;
   description: string;
   tags: string[];
+  extra: IExtraInfo[];
   bosses: IBoss[];
 }
 
@@ -17,10 +18,10 @@ interface IBoss {
   raid: string;
   wowhead: string;
   youtube: string;
-  extra: IBossExtraInfo[];
+  extra: IExtraInfo[];
 }
 
-interface IBossExtraInfo {
+interface IExtraInfo {
   name: string;
   content: string;
 }
@@ -112,7 +113,7 @@ export default class GuidesModule extends ResponderBotModule
     {
       const embed = new RichEmbed()
       .setTitle(`__${guide.name} Mythic - ${guide.raid}__`)
-      .setColor(0xff0000);
+      .setColor(0xfaa61a);
 
       if (guide.thumbnail)
       {
@@ -143,8 +144,8 @@ export default class GuidesModule extends ResponderBotModule
     private replyRaid(raid: IRaid, message: Discord.Message)
     {
       const embed = new RichEmbed()
-      .setTitle(`__${raid.name} (Battle for Azeroth)__`)
-      .setColor(0xff0000);
+      .setTitle(`__${raid.name}__`)
+      .setColor(0xfaa61a);
       if (raid.description)
       {
         embed.setDescription(raid.description);
@@ -157,10 +158,19 @@ export default class GuidesModule extends ResponderBotModule
           if (boss.tags && boss.tags.length)
           {
             const firsttag = boss.tags[0];
-            guides += `  **${boss.name}:** \`!guide ${firsttag}\`\n`;
+            guides += `**${boss.name}:** \`!guide ${firsttag}\`\n`;
           }
         });
-        embed.addField("Available guide commands", guides);
+        embed.addField("__Available guide commands__", guides);
+      }
+      if (raid.extra && raid.extra.length)
+      {
+        let extras = "";
+        raid.extra.forEach((e) =>
+        {
+          extras += `**${e.name}:** ${e.content}\n`;
+        });
+        embed.addField("__Extras__", extras);
       }
       message.reply(embed);
     }
