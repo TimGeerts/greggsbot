@@ -101,7 +101,7 @@ export default class RaiderIoModule extends ResponderBotModule
       }
 
       const URL = `${this.RAIDER_IO_GUILD_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=raid_rankings,raid_progression`;
-
+      
       fetch(URL, {method: "GET"})
       .then((response) =>
       {
@@ -114,20 +114,20 @@ export default class RaiderIoModule extends ResponderBotModule
       .then((raiderIo: IRaiderIOResponse) =>
       {
           const uldirMythicRanks =
-          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.mythic.realm)} / ` +
-          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.mythic.region)}`;
+          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings["battle-of-dazaralor"].mythic.realm)} / ` +
+          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings["battle-of-dazaralor"].mythic.region)}`;
 
           const uldirHeroic =
-          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.heroic.realm)} / ` +
-          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.heroic.region)}`;
+          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings["battle-of-dazaralor"].heroic.realm)} / ` +
+          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings["battle-of-dazaralor"].heroic.region)}`;
 
           const uldirNorm =
-          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.normal.realm)} / ` +
-          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings.uldir.normal.region)}`;
+          `S ${this.ordinal_suffix_of(raiderIo.raid_rankings["battle-of-dazaralor"].normal.realm)} / ` +
+          `R ${this.ordinal_suffix_of(raiderIo.raid_rankings["battle-of-dazaralor"].normal.region)}`;
 
-          const mythicSummary = `Uldir M ${raiderIo.raid_progression.uldir.mythic_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
-          const heroicSummary = `Uldir HC ${raiderIo.raid_progression.uldir.heroic_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
-          const normalSummary = `Uldir N ${raiderIo.raid_progression.uldir.normal_bosses_killed}/${raiderIo.raid_progression.uldir.total_bosses}`;
+          const mythicSummary = `BoD M ${raiderIo.raid_progression["battle-of-dazaralor"].mythic_bosses_killed}/${raiderIo.raid_progression["battle-of-dazaralor"].total_bosses}`;
+          const heroicSummary = `BoD HC ${raiderIo.raid_progression["battle-of-dazaralor"].heroic_bosses_killed}/${raiderIo.raid_progression["battle-of-dazaralor"].total_bosses}`;
+          const normalSummary = `BoD N ${raiderIo.raid_progression["battle-of-dazaralor"].normal_bosses_killed}/${raiderIo.raid_progression["battle-of-dazaralor"].total_bosses}`;
 
           const embed = new RichEmbed()
               .setTitle("Raider.IO Rankings")
@@ -162,7 +162,6 @@ export default class RaiderIoModule extends ResponderBotModule
           }
 
         const URL = `${this.RAIDER_IO_CHAR_URL}?name=${command.name}&realm=${command.realm}&region=${command.region}&fields=guild,mythic_plus_scores,mythic_plus_ranks`;
-        
         fetch(URL, {method: "GET"})
         .then((response) =>
         {
@@ -285,7 +284,8 @@ export interface IRaidData<T>
     // "the-nighthold": IRaid;
     // "tomb-of-sargeras": IRaid;
     // "trial-of-valor": IRaid;
-    "uldir": T;
+    // "uldir": T;
+    "battle-of-dazaralor": T;
 }
 
 export interface IMythicPlusData<T>{
