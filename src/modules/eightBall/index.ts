@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import { ResourceService } from "../../services/resource.service";
-import { ResponderBotModule } from "../ResponderBotModule";
+import { ResponderBotModule } from "../responderBotModule";
 
 interface IAnswer
 {
