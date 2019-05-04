@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 
 import { IBotModule } from "./modules/botModule";
+import EightBallModule from "./modules/eightBall";
 import EmojiPastaModule from "./modules/emojiPasta";
 import HelpModule from "./modules/help";
 import QuickLinksModule from "./modules/quickLinks";
@@ -40,6 +41,7 @@ export default class GreggsBot {
   private initModules(): void
   {
     this.modules.push(new RollBotModule(this.client));
+    this.modules.push(new EightBallModule(this.client, this.resourceService));
     this.modules.push(new EmojiPastaModule(this.client, this.resourceService));
     this.modules.push(new QuickLinksModule(this.client, this.resourceService));
     this.modules.push(new RaidReminderModule(this.client, this.resourceService));
