@@ -27,6 +27,12 @@ export class ResourceService {
     return this.getResource(URL);
   }
 
+  public getAnswers()
+  {
+    const URL = `${this.apiUrl}answers.json`;
+    return this.getResource(URL);
+  }
+
   public getPastas()
   {
     const URL = `${this.apiUrl}pastas.json`;
