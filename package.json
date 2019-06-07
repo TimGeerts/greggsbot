@@ -7,6 +7,10 @@
   "author": "Ionis",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "10.x",
+    "npm": "*"
+},
   "devDependencies": {
     "@types/node": "^10.10.2",
     "@types/node-cron": "^1.2.0",
