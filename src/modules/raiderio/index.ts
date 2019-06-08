@@ -94,6 +94,13 @@ export default class RaiderIoModule extends ResponderBotModule
           return response;
       }
 
+      if (command.name.toLowerCase() === "fresh")
+      {
+          const response = "Fresh? Don't you mean 'STALE'?!";
+          message.reply(response);
+          return response;
+      }
+
       if (this.REGIONS.indexOf(command.region) === -1)
       {
           message.reply(`Where the fuck is ${command.region}? Try one of ${this.REGIONS.join(", ")}.`);
