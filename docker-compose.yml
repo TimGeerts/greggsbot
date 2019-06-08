@@ -1,9 +1,0 @@
-version: '3'
-services:
-    server:
-        container_name: greggs-bot
-        build: .
-        volumes:
-          - ./log:/home/node/app/log
-        env_file:
-          - environment.env
