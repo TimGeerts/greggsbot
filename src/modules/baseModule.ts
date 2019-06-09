@@ -15,7 +15,7 @@ export default abstract class BaseModule {
       logger.error(`Channel ${this.botChannelId} not found, channel logging will be disabled.`);
       return;
     }
-    this.log(`Module '${moduleName}' started`);
+    // this.log(`Module '${moduleName}' started`);
   }
 
   /** logs to a specific channel on the discord, the channelId can be set as an environment variable 'BOT_CHAN' */
