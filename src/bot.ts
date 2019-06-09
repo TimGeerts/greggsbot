@@ -87,6 +87,6 @@ export default class GreggsBot {
         logger.error(`Could not find the channel to be used for broadcast messages. It does not exist. [509379684388044800]`);
         return;
     }
-    botChannel.send(`[${new Date().toLocaleString()}] - bot started`);
+    botChannel.send(`[${new Date().toLocaleString()}] - bot started, bleep bloop bleep :robot:`);
   }
 }
