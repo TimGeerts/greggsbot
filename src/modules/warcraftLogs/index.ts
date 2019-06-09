@@ -24,6 +24,7 @@ export default class WarcraftLogsModule extends ResponderBotModule {
 
   protected process(message: Discord.Message): void {
     if (this.WCL_TOKEN === undefined) {
+      this.log('no WCL_TOKEN variable found', 'error');
       return;
     }
 
