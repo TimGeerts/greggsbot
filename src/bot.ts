@@ -19,6 +19,13 @@ export default class GreggsBot {
   public readonly modules: IBotModule[] = [];
   private readonly client: Discord.Client;
   private readonly resourceService: ResourceService;
+  private readonly botReplies: string[] = [
+    `FUCK OFF AND LEAVE ME ALONE!!!!`,
+    `Brb, having a wank :eggplant: :sweat_drops:`,
+    `This is my cup of care, c|_|, if you look closely, IT'S EMPTY!!`,
+    `Stop mentioning me or I'll  ban you!`,
+    `:robot: bleep bloop bleep bloop :robot:`
+  ];
 
   constructor() {
     this.client = new Discord.Client();
@@ -61,6 +68,11 @@ export default class GreggsBot {
   private handleMessage = (message: Discord.Message) => {
     try {
       const prefix = process.env.PREFIX || '!';
+      if (message.isMentioned(this.client.user)) {
+        const rn = Math.floor(Math.random() * this.botReplies.length);
+        message.reply(this.botReplies[rn]);
+        return;
+      }
       if (!message.content.startsWith(prefix) || message.author.bot || message.guild === null) {
         return;
       }
