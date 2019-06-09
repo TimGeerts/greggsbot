@@ -1,55 +1,51 @@
-import fetch from "node-fetch";
-import logger from "../logger";
+import fetch from 'node-fetch';
+import logger from '../logger';
 
 export class ResourceService {
   private apiUrl: string;
 
-  constructor()
-  {
+  constructor() {
     const maybeFirebaseUrl = process.env.API;
-    if (maybeFirebaseUrl === undefined)
-    {
-      logger.error("API url not sent in process envs");
-      throw new Error("");
+    if (maybeFirebaseUrl === undefined) {
+      logger.error('API url not sent in process envs');
+      throw new Error('');
     }
     this.apiUrl = maybeFirebaseUrl;
   }
 
-  public getRaidGuides()
-  {
+  public getRaidGuides() {
     const URL = `${this.apiUrl}raids.json`;
     return this.getResource(URL);
   }
 
-  public getQuickLinks()
-  {
+  public getQuickLinks() {
     const URL = `${this.apiUrl}links.json`;
     return this.getResource(URL);
   }
 
-  public getAnswers()
-  {
+  public getAnswers() {
     const URL = `${this.apiUrl}answers.json`;
     return this.getResource(URL);
   }
 
-  public getPastas()
-  {
+  public getPastas() {
     const URL = `${this.apiUrl}pastas.json`;
     return this.getResource(URL);
   }
 
-  public getReminders()
-  {
+  public getReminders() {
     const URL = `${this.apiUrl}reminders.json`;
     return this.getResource(URL);
   }
 
-  private async getResource(url: string)
-  {
+  public getBotResponses() {
+    const url = `${this.apiUrl}botreplies.json`;
+    return this.getResource(url);
+  }
+
+  private async getResource(url: string) {
     const r = await fetch(url);
-    if (r.ok)
-    {
+    if (r.ok) {
       return r.json();
     }
     throw new Error(r.statusText);

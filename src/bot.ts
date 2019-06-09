@@ -12,20 +12,15 @@ import WarcraftLogsModule from './modules/warcraftLogs';
 import WowTokenPrice from './modules/wowtoken';
 
 import logger from './logger';
+import AiModule from './modules/ai';
 import GuidesModule from './modules/guides';
 import { ResourceService } from './services/resource.service';
 
 export default class GreggsBot {
   public readonly modules: IBotModule[] = [];
+  private aiModule: AiModule | undefined;
   private readonly client: Discord.Client;
   private readonly resourceService: ResourceService;
-  private readonly botReplies: string[] = [
-    `FUCK OFF AND LEAVE ME ALONE!!!!`,
-    `Brb, having a wank :eggplant: :sweat_drops:`,
-    `This is my cup of care, c|_|, if you look closely, IT'S EMPTY!!`,
-    `Stop mentioning me or I'll  ban you!`,
-    `:robot: bleep bloop bleep bloop :robot:`
-  ];
 
   constructor() {
     this.client = new Discord.Client();
@@ -41,6 +36,7 @@ export default class GreggsBot {
   }
 
   private initModules(): void {
+    this.aiModule = new AiModule(this.client, this.resourceService);
     this.modules.push(new RollBotModule(this.client));
     this.modules.push(new EightBallModule(this.client, this.resourceService));
     this.modules.push(new EmojiPastaModule(this.client, this.resourceService));
@@ -68,16 +64,14 @@ export default class GreggsBot {
   private handleMessage = (message: Discord.Message) => {
     try {
       const prefix = process.env.PREFIX || '!';
-      if (message.isMentioned(this.client.user)) {
-        const rn = Math.floor(Math.random() * this.botReplies.length);
-        message.reply(this.botReplies[rn]);
+      if (message.isMentioned(this.client.user) && this.aiModule) {
+        this.aiModule.handleMessage(message);
         return;
-      }
-      if (!message.content.startsWith(prefix) || message.author.bot || message.guild === null) {
+      } else if (!message.content.startsWith(prefix) || message.author.bot || message.guild === null) {
         return;
+      } else {
+        this.modules.forEach((m) => m.handleMessage(message));
       }
-
-      this.modules.forEach((m) => m.handleMessage(message));
     } catch (error) {
       logger.error(error);
     }
