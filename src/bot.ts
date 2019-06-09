@@ -35,6 +35,7 @@ export default class GreggsBot {
       {
         logger.info(`Client authenticated`);
         this.initModules();
+        this.broadcastBotStart();
       });
   }
 
@@ -77,5 +78,15 @@ export default class GreggsBot {
     {
       logger.error(error);
     }
+  }
+
+  private broadcastBotStart(): void {
+    const botChannel = this.client.channels.get('509379684388044800') as Discord.TextChannel;
+    if (botChannel === undefined)
+    {
+        logger.error(`Could not find the channel to be used for broadcast messages. It does not exist. [509379684388044800]`);
+        return;
+    }
+    botChannel.send(`[${new Date().toLocaleString()}] - bot started`);
   }
 }
