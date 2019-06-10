@@ -1,9 +1,7 @@
-import GreggsBot from "./bot";
-import logger from "./logger";
+import GreggsBot from './bot';
 
 const discordToken = process.env.DISCORD_TOKEN;
 
-if (discordToken !== undefined)
-{
+if (discordToken !== undefined) {
   new GreggsBot().start(discordToken);
 }
