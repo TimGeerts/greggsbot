@@ -35,6 +35,26 @@ export default class GreggsBot {
     });
   }
 
+  private restart(message: Discord.Message): void {
+    logger.info(`Restarting bot...`);
+    message
+      .reply('Very well master, restarting, brb...')
+      .then(() => {
+        this.client.destroy();
+      })
+      .then(() => {
+        const discToken = process.env.DISCORD_TOKEN;
+        if (discToken) {
+          this.start(discToken);
+          // I did not want to make all the methods async to have a proper promise chain to reply
+          // so, 5 seconds, cause ... reasons
+          setTimeout(() => {
+            message.reply(':robot: up and running again :ok_hand:');
+          }, 5000);
+        }
+      });
+  }
+
   private initModules(): void {
     this.aiModule = new AiModule(this.client, this.resourceService);
     this.modules.push(new RollBotModule(this.client));
@@ -65,8 +85,15 @@ export default class GreggsBot {
     try {
       const prefix = process.env.PREFIX || '!';
       if (message.isMentioned(this.client.user) && this.aiModule) {
-        this.aiModule.handleMessage(message);
-        return;
+        if (message.content.toLowerCase().includes('restart')) {
+          const botAdmin = message.member.roles.some((r) => r.name === 'Greggs Bot Maintainer');
+          if (!botAdmin) {
+            message.reply(`No, you're not my master, shame on you for trying to restart me!`);
+          }
+          this.restart(message);
+        } else {
+          this.aiModule.handleMessage(message);
+        }
       } else if (!message.content.startsWith(prefix) || message.author.bot || message.guild === null) {
         return;
       } else {
