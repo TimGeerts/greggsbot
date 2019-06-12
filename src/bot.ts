@@ -36,7 +36,7 @@ export default class GreggsBot {
   }
 
   private restart(message: Discord.Message): void {
-    const botAdmin = message.member.roles.some((r) => r.name === 'TestRaider');
+    const botAdmin = message.member.roles.some((r) => r.name === 'Greggs Bot Maintainer');
     if (botAdmin) {
       logger.info(`Restarting bot...`);
       message.reply('Very well master, restarting, brb...').then(() => {
