@@ -12,6 +12,7 @@
     "npm": "*"
   },
   "devDependencies": {
+    "@types/graphql": "^14.2.0",
     "@types/node": "^10.10.2",
     "@types/node-cron": "^1.2.0",
     "clean-webpack-plugin": "^0.1.19",

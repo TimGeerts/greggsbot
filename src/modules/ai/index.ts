@@ -2,6 +2,9 @@ import Discord from 'discord.js';
 import { ResourceService } from '../../services/resource.service';
 import BaseModule from '../baseModule';
 
+interface IReplies {
+  replies: IReply[];
+}
 interface IReply {
   weight: number;
   content: string;
@@ -37,8 +40,8 @@ export default class AiModule extends BaseModule {
   private lookupResponse(message: Discord.Message) {
     this.resourceService
       .getBotResponses()
-      .then((responses: IReply[]) => {
-        this.replies = responses.filter((r) => r.weight);
+      .then((resp: IReplies) => {
+        this.replies = resp.replies.filter((reply) => reply.weight);
         if (this.replies && this.replies.length) {
           const ri = this.getRandomIndex();
           message.reply(this.replies[ri].content);

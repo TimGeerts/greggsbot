@@ -1,3 +1,4 @@
+import { graphql } from 'graphql';
 import fetch from 'node-fetch';
 import logger from '../logger';
 
@@ -39,6 +40,8 @@ export class ResourceService {
   }
 
   public getBotResponses() {
+    return this.getResourceFromGraphQl();
+    // this.testGraphQl();
     const url = `${this.apiUrl}botreplies.json`;
     return this.getResource(url);
   }
@@ -49,5 +52,15 @@ export class ResourceService {
       return r.json();
     }
     throw new Error(r.statusText);
+  }
+
+  private async getResourceFromGraphQl() {
+    return fetch('https://us-central1-greggs-d6c7a.cloudfunctions.net/api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: '{ replies { weight, content } }' })
+    })
+      .then((res) => res.json())
+      .then((res) => res.data);
   }
 }
