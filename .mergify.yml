@@ -1,0 +1,6 @@
+pull_request_rules:
+  - name: automatic delete after merge
+    conditions:
+      - merged
+    actions:
+      delete_head_branch: {}
