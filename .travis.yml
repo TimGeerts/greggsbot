@@ -4,4 +4,4 @@ node_js:
 #before_install:
 #  - npm install -g typescript@1.0
 script:
-  - npm build
+  - npm run build
