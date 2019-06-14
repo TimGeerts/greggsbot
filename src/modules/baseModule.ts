@@ -27,4 +27,8 @@ export default abstract class BaseModule {
     }
     this.botChannel.send(`${prefix}${message}`);
   }
+
+  protected isAdmin(message: Discord.Message) {
+    return message.member.roles.some((r) => r.name === 'Greggs Bot Maintainer');
+  }
 }
