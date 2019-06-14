@@ -1,17 +1,26 @@
-import { graphql } from 'graphql';
+import { request } from 'graphql-request';
+import { ClientError, Variables } from 'graphql-request/dist/src/types';
 import fetch from 'node-fetch';
 import logger from '../logger';
+import { IReplies, IReply } from '../types';
 
 export class ResourceService {
   private apiUrl: string;
+  private gqlUrl: string;
 
   constructor() {
     const maybeFirebaseUrl = process.env.API;
     if (maybeFirebaseUrl === undefined) {
       logger.error('API url not sent in process envs');
-      throw new Error('');
+      throw new Error('API url not sent in process envs');
     }
     this.apiUrl = maybeFirebaseUrl;
+
+    this.gqlUrl = process.env.GQL || '';
+    if (!this.gqlUrl || !this.gqlUrl.length) {
+      logger.error('GQL url not sent in process envs');
+      throw new Error('GQL environment value was not set');
+    }
   }
 
   public getRaidGuides() {
@@ -39,11 +48,15 @@ export class ResourceService {
     return this.getResource(URL);
   }
 
-  public getBotResponses() {
-    return this.getResourceFromGraphQl();
-    // this.testGraphQl();
-    const url = `${this.apiUrl}botreplies.json`;
-    return this.getResource(url);
+  public getBotResponses(): Promise<IReply[]> {
+    const query = `{
+      replies
+      {
+        weight,
+        content
+      }
+    }`;
+    return this.execGraphQl<IReplies>(query).then((r) => r.replies);
   }
 
   private async getResource(url: string) {
@@ -54,13 +67,17 @@ export class ResourceService {
     throw new Error(r.statusText);
   }
 
-  private async getResourceFromGraphQl() {
-    return fetch('https://us-central1-greggs-d6c7a.cloudfunctions.net/api', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: '{ replies { weight, content } }' })
-    })
-      .then((res) => res.json())
-      .then((res) => res.data);
+  private execGraphQl<T>(query: string, variables?: Variables | undefined): Promise<T> {
+    return request<T>(this.gqlUrl, query, variables).catch(this.handleError);
+  }
+
+  private handleError(error: ClientError): Promise<never> {
+    let errorMessage = error.message;
+    const errParts = errorMessage.split(': {');
+    if (errParts.length && errParts.length > 0) {
+      errorMessage = errParts[0];
+    }
+    logger.error(errorMessage);
+    return Promise.reject(new Error(errorMessage));
   }
 }
